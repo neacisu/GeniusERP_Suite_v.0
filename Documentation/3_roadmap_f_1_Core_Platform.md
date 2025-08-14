@@ -1,0 +1,133 @@
+# Roadmap F1 – Core Platform (100 prompts CursorAI)
+
+## Informații generale
+
+Această fază acoperă dezvoltarea platformei de bază cu 100 de pași (step 200-299).
+
+## Format JSON extins – câmpuri obligatorii
+
+| Câmp | Descriere |
+|------|-----------|
+| `step` | Index consecutiv **200-299** |
+| `scope` | Sub-sistem vizat (max 3–4 cuvinte) |
+| `context` | Livrări anterioare relevante |
+| `task` | Instrucțiune imperativă clară |
+| `dirs` | Listează directoarele vizate |
+| `constraints` | Reguli stricte (commit-msg, chmod, etc.) |
+| `output` | Rezultat așteptat |
+
+**Notă:** Structura respectă ad literam exemplul din **F0**; nu introduce termene, doar ordine logică.
+
+## Umbrella - Dependencies & Context F1
+
+| Interval | Effort | Scop/Componente | Layer | Dependințe F0 |
+|----------|--------|-----------------|-------|----------------|
+| 1‑4 | 1 SW | Event Bus RMQ namespaces & conventions v1 | infra | **0‑20, 33** |
+
+## Pașii de implementare (199-299)
+
+```json
+[
+  {"step":199,"scope":"handover-f0-check","context":"docs/handovers/F0_handover.md generat în step 100 F0","task":"CI rule: fail dacă fișierul lipsește sau last‑updated > 7 zile.","dirs":["/docs/handovers/"],"constraints":"Github Action `handover-check` trebuie să fie verde.","output":"Valid hand‑over"},
+  {"step":200,"scope":"shell-ui-bootstrap","context":"Nu există frontend Shell.","task":"Folosește scripts/create-module.ts pentru a genera app React+ Vite `shell-gateway/frontend` + tags Nx `module:shell,layer:frontend`.","dirs":["/core/apps/shell-gateway/frontend/"],"constraints":"commit 'feat(shell-ui): scaffold shell frontend'.","output":"skeleton frontend Shell"},
+  {"step":201,"scope":"shell-ui-tailwind","context":"Skeleton creat (pas 200).","task":"Configurează Tailwind+ preset tokens în `tailwind.config.ts`; importă `@genius/ui/tokens`.","dirs":["/core/apps/shell-gateway/frontend/"],"constraints":"commit 'chore(shell-ui): add tailwind'.","output":"Tailwind funcțional"},
+  {"step":202,"scope":"shell-ui-aliases","context":"Imports relative.","task":"Adaugă path-aliases `@shell/*` în tsconfig base și vite.config federation.","dirs":["/","/core/apps/shell-gateway/frontend/"],"constraints":"No paths absolute.","output":"alias paths"},
+  {"step":203,"scope":"shell-ui-loader","context":"Module federation neconfigurat.","task":"Integrează remote-loader (Vite plugin federation) și expune `remoteEntry.js`.","dirs":["/core/apps/shell-gateway/frontend/"],"constraints":"commit 'feat(shell-ui): remote-loader'.","output":"remoteEntry expus"},
+  {"step":204,"scope":"shell-ui-layout","context":"UI gol.","task":"Scaffold Layout (AppBar, Drawer, Outlet) cu MUI6 Components & slots.","dirs":["/core/apps/shell-gateway/frontend/src/"],"constraints":"fără styled-components.","output":"layout vizibil"},
+  {"step":205,"scope":"ui-docs-tailwind","context":"MUI 6 + Tailwind 3 coexistă.","task":"Actualizează `packages/ui/README.md` cu ordinea importurilor + `tailwind.config` { important:'#root' }.","dirs":["/packages/ui/"],"constraints":"","output":"doc styling"},
+  {"step":206,"scope":"shell-ui-theme","context":"Tokens importate (pas 201).","task":"Implementează ThemeProvider + switch light/dark salvând în localStorage `theme`.","dirs":["/core/apps/shell-gateway/frontend/src/"],"constraints":"Respectă pregătirea Theme Hub.","output":"theme switch"},
+  {"step":207,"scope":"shell-ui-nav","context":"Drawer static.","task":"Generează meniu side-nav din JSON livrat de Admin Core `/v1/admin/nav`.","dirs":["/core/apps/shell-gateway/frontend/src/"],"constraints":"Fallback static când API 404.","output":"navigație dinamică"},
+  {"step":208,"scope":"shell-ui-version","context":"Nu afișează versiune.","task":"Adaugă componentă `VersionBadge` care citește `import.meta.env.VITE_COMMIT_SHA`.","dirs":["/core/apps/shell-gateway/frontend/src/components/"],"constraints":"vite define env.","output":"commit hash în UI"},
+  {"step":209,"scope":"shell-ui-health-widget","context":"/health doar backend.","task":"Afișează widget status Gateway, Admin Core, RMQ prin fetch periodic 30s.","dirs":["/core/apps/shell-gateway/frontend/src/widgets/"],"constraints":"AbortController timeout 3s.","output":"health widget"},
+  {"step":210,"scope":"shell-ui-webvitals","context":"Observabilitate UX lipsă.","task":"Integrează `web-vitals` și trimite metrici la `window.prometheusWebVitals`.","dirs":["/core/apps/shell-gateway/frontend/"],"constraints":"commit 'feat(shell-ui): web-vitals'.","output":"LCP/FID/CLS colectate"},
+  {"step":211,"scope":"shell-ui-storybook","context":"Componente fără catalog.","task":"Adaugă Storybook8 la workspace și configurează pentru `packages/ui` + shell.","dirs":["/","/packages/ui/"],"constraints":"nx run-many storybook.","output":"storybook local"},
+  {"step":212,"scope":"shell-ui-stories","context":"Storybook gol.","task":"Creează 3 stories (Button, Card, Modal) folosind tokens.","dirs":["/packages/ui/src/"],"constraints":"CSF 3 format.","output":"stories vizibile"},
+  {"step":213,"scope":"shell-ui-unit-test","context":"Zero teste.","task":"Adaugă Vitest + Testing Library, cover Layout + VersionBadge; threshold 80%.","dirs":["/core/apps/shell-gateway/frontend/"],"constraints":"commit 'test(shell-ui): vitest'.","output":"teste unit pass"},
+  {"step":214,"scope":"shell-ui-e2e","context":"E2E absent.","task":"Configurează Playwright proiect `shell-e2e` cu test login + nav.","dirs":["/core/apps/shell-gateway/frontend-e2e/"],"constraints":"headless ci.","output":"playwright verde"},
+  {"step":215,"scope":"shell-ui-ci","context":"CI generic F0.","task":"Adaugă job `nx affected -t lint,test,build` pt shell-ui + upload storybook artefact.","dirs":["/.github/workflows/ci-template.yml"],"constraints":"lint fail on warn.","output":"CI shell-ui"},
+  {"step":216,"scope":"shell-ui-dockerfile","context":"Image lipsă.","task":"Creează `docker/frontend.Dockerfile` multi-stage vite build → Nginx.","dirs":["/docker/"],"constraints":"no root user.","output":"image build ok"},
+  {"step":217,"scope":"shell-ui-helm","context":"Deploy lipsă.","task":"Chart `infra/helm/shell-frontend/` values dev|prod incl. IngressRoute.","dirs":["/infra/helm/shell-frontend/"],"constraints":"OCI push.","output":"chart publicat"},
+  {"step":218,"scope":"shell-ui-dashboard","context":"Observability UX.","task":"Dashboard Grafana Web-Vitals (LCP P75, CLS P75).","dirs":["/infra/grafana/provisioning/dashboards/"],"constraints":"uid shell_vitals.","output":"dashboard gata"},
+  {"step":219,"scope":"shell-ui-gate","context":"Gate F1 criteriu shell.","task":"Script `scripts/gate-f1-shell.sh` verifică 3 widget demo up.","dirs":["/scripts/"],"constraints":"exit>0 dacă fail.","output":"gate script"},
+  {"step":220,"scope":"shell-ui-docs","context":"Docs incomplet.","task":"Update `roadmap/shell.md` cu secțiune F1 livrări.","dirs":["/roadmap/"],"constraints":"commit 'docs(shell): f1 roadmap'.","output":"docs actualizate"},
+  {"step":221,"scope":"shell-ui-a11y","context":"Accesibilitate need.","task":"Activează eslint-plugin-jsx-a11y rules high.","dirs":["/packages/rules-eslint/"],"constraints":"CI fail on error.","output":"a11y rules"},
+  {"step":222,"scope":"shell-ui-lighthouse","context":"Perf budget.","task":"Adaugă job Lighthouse CI: LCP ≤ 2.5s, score≥ 90.","dirs":["/.github/workflows/ci-template.yml"],"constraints":"upload report.","output":"perf gate"},
+  {"step":223,"scope":"shell-ui-cdn","context":"remoteEntry publish manual.","task":"Script `scripts/publish-remote.sh` push `remoteEntry.js` în R2 CDN, semnat Cosign.","dirs":["/scripts/"],"constraints":"idempotent.","output":"remote CDN"},
+  {"step":224,"scope":"shell-ui-argocd","context":"Argo app lipsă.","task":"Application YAML `infra/k8s/argocd/shell-frontend.yaml`.","dirs":["/infra/k8s/argocd/"],"constraints":"","output":"Argo sync shell"},
+  {"step":225,"scope":"admin-core-skel","context":"Admin Core inexistent.","task":"`scripts/create-module.ts` generează `admin-core` (frontend, api, workers).","dirs":["/core/apps/admin-core/{frontend,api}/"],"constraints":"commit 'feat(admin-core): skeleton'.","output":"module skeleton"},
+  {"step":226,"scope":"admin-db-migrations","context":"PG schema lipsă.","task":"Creează migrations TypeORM tabele `settings`, `roles`, `themes`.","dirs":["/core/apps/admin-core/api/src/migrations/"],"constraints":"include tid,whid.","output":"migrations SQL"},
+  {"step":227,"scope":"admin-rbac-service","context":"Tabele create.","task":"Serviciu NestJS `RbacService` CRUD roluri + scope uri.","dirs":["/core/apps/admin-core/api/src/"],"constraints":"unit tests 80%.","output":"serviciu RBAC"},
+  {"step":228,"scope":"admin-settings-api","context":"Settings table există.","task":"Controller `SettingsController` GET/PUT tenant-scoped.","dirs":["/core/apps/admin-core/api/src/controllers/"],"constraints":"Guard tid.","output":"API settings"},
+  {"step":229,"scope":"admin-theme-api","context":"Theme Hub table.","task":"Endpoint `/themes` POST → validate JSON tokens.","dirs":["/core/apps/admin-core/api/src/"],"constraints":"payload 50KB max.","output":"API themes"},
+  {"step":230,"scope":"admin-dtos","context":"Validare lipsă.","task":"Define DTO cu `class-validator`, pipe global validation.","dirs":["/core/apps/admin-core/api/src/dto/"],"constraints":"no any.","output":"DTO stricte"},
+  {"step":231,"scope":"admin-auth-guard","context":"JWT guard generic.","task":"Extinde AuthGuard pentru claims `scp` + `role`.","dirs":["/core/apps/admin-core/api/src/guards/"],"constraints":"unit tested.","output":"guard RBAC"},
+  {"step":232,"scope":"admin-configmap","context":"Valori default.","task":"Helm `ConfigMap` `admin-defaults` (theme=light) **și** `ExternalSecret admin-theme` (sursa SecretsManager).","dirs":["/infra/helm/admin-core/","/infra/k8s/"],"constraints":"ESO gata (step 41).","output":"ConfigMap + secret sync"},
+  {"step":233,"scope":"admin-unit-tests","context":"Coverage sub 80%.","task":"Adaugă teste servicii Settings & Rbac.","dirs":["/core/apps/admin-core/api/"],"constraints":"","output":"coverage 85%"},
+  {"step":234,"scope":"admin-e2e-tests","context":"E2E lipsă.","task":"Supertest `e2e/settings.spec.ts` la /settings.","dirs":["/core/apps/admin-core/api/tests/"],"constraints":"","output":"e2e verde"},
+  {"step":235,"scope":"admin-swagger","context":"API doc.","task":"Integrează Swagger module `/docs` protejat basic-auth.","dirs":["/core/apps/admin-core/api/"],"constraints":"info.version from pkg.","output":"Swagger online"},
+  {"step":236,"scope":"admin-ui-skel","context":"Frontend gol.","task":"Scaffold MUI pages Settings, RBAC, ThemeHub consumând API.","dirs":["/core/apps/admin-core/frontend/"],"constraints":"Use tanstack-query.","output":"UI pagini"},
+  {"step":237,"scope":"admin-ui-settings","context":"Skeleton creat.","task":"Finalizează Settings form cu react-hook-form + zod.","dirs":["/core/apps/admin-core/frontend/"],"constraints":"tests 80%.","output":"page settings"},
+  {"step":238,"scope":"admin-ui-rbac","context":"Directory page.","task":"Implementează tabel Users + Roles cu DataGrid Pro.","dirs":["/core/apps/admin-core/frontend/"],"constraints":"","output":"RBAC directory"},
+  {"step":239,"scope":"admin-ui-theme","context":"ThemeHub.","task":"Upload JSON theme, preview live în iframe Shell.","dirs":["/core/apps/admin-core/frontend/"],"constraints":"size<25KB.","output":"ThemeHub UI"},
+  {"step":240,"scope":"admin-ui-tests","context":"Unit tests page.","task":"Vitest + Jest-dom pentru cele 3 pagini.","dirs":["/core/apps/admin-core/frontend/"],"constraints":"","output":"tests pass"},
+  {"step":241,"scope":"admin-ui-e2e","context":"Playwright.","task":"Add `admin-e2e` test create role, edit theme.","dirs":["/core/apps/admin-core/frontend-e2e/"],"constraints":"","output":"e2e verde"},
+  {"step":242,"scope":"admin-ci","context":"CI generic.","task":"Nx affected pentru admin-core build/test + upload coverage Codecov.","dirs":["/.github/workflows/ci-template.yml"],"constraints":"Codecov token secret.","output":"CI admin"},
+  {"step":243,"scope":"admin-dockerfile","context":"Containerizare.","task":"Dockerfile api (multi-stage Nest build) + Dockerfile ui.","dirs":["/docker/"],"constraints":"non-root 1000.","output":"images ok"},
+  {"step":244,"scope":"admin-helm-chart","context":"Deploy admin.","task":"Chart `infra/helm/admin-core/` include api, ui, ingress, HPA.","dirs":["/infra/helm/admin-core/"],"constraints":"cosign sign.","output":"chart OCI"},
+  {"step":245,"scope":"admin-otel","context":"Traces lipsă.","task":"Enable OTEL NestJS exporter + resource.service.name admin-api.","dirs":["/core/apps/admin-core/api/"],"constraints":"","output":"traces Tempo"},
+  {"step":246,"scope":"admin-prom-metrics","context":"Metrics default.","task":"Add Prometheus metrics middleware Nest (`http_requests_seconds`).","dirs":["/core/apps/admin-core/api/"],"constraints":"","output":"metrics"},
+  {"step":247,"scope":"admin-grafana","context":"Dashboard.","task":"Grafana dashboard RBAC ops (role count, fail auth).","dirs":["/infra/grafana/provisioning/dashboards/"],"constraints":"","output":"dashboard RBAC"},
+  {"step":248,"scope":"admin-tenant-script","context":"Bootstrap tenant.","task":"Extinde `scripts/bootstrap-tenant.py` să cheme Admin API `/settings/init`.","dirs":["/scripts/"],"constraints":"","output":"script extins"},
+  {"step":249,"scope":"admin-opa-policies","context":"Gatekeeper rule.","task":"Template Constraint `CTThemeValid` + Constraint `ThemeValid` limitează culoare hex.","dirs":["/infra/policies/opa/"],"constraints":"mode warn dev.","output":"OPA policy"},
+  {"step":250,"scope":"admin-postman","context":"Colecție lipsă.","task":"Exportă Postman collection v2.1 în `docs/postman/admin-core.json`.","dirs":["/docs/postman/"],"constraints":"","output":"colecție postman"},
+  {"step":251,"scope":"admin-hpa","context":"Scalare.","task":"Adaugă HPA CPU 50-300m pentru admin-api în chart.","dirs":["/infra/helm/admin-core/"],"constraints":"","output":"HPA activ"},
+  {"step":252,"scope":"admin-jwt-secret","context":"JWT RS256.","task":"K8s Secret `admin-jwt` cu placeholder, montat la pod.","dirs":["/infra/k8s/"],"constraints":"no key leak.","output":"secret creat"},
+  {"step":253,"scope":"admin-coverage-badge","context":"Codecov.","task":"Badge codecov în README root.","dirs":["/README.md"],"constraints":"","output":"badge vizibil"},
+  {"step":254,"scope":"admin-argocd","context":"Continuous deploy.","task":"Argo Application YAML `admin-core.yaml`.","dirs":["/infra/k8s/argocd/"],"constraints":"","output":"Argo sync admin"},
+  {"step":255,"scope":"wrk-registry-model","context":"Worker tabele lipsă.","task":"Entity TypeORM `WorkerStatus` (id,tag,ver,last_seen).","dirs":["/core/apps/admin-core/api/src/entities/"],"constraints":"","output":"model DB"},
+  {"step":256,"scope":"wrk-registry-endpoints","context":"Model creat.","task":"Controller `/workers` GET list, PATCH heartbeat.","dirs":["/core/apps/admin-core/api/src/controllers/"],"constraints":"auth scope admin.","output":"API registry"},
+  {"step":257,"scope":"wrk-registry-cron","context":"script creat la 106 F0","task":"Adaugă logic scrape Celery /metrics și update status Redis.","dirs":["/scripts/update-worker-registry.py"],"constraints":"","output":"cron actualizat"},
+  {"step":258,"scope":"wrk-registry-redis","context":"Redis structura.","task":"Define key-schema `wrk:<tag>:status` TTL 120s.","dirs":["/core/apps/admin-core/api/"],"constraints":"","output":"cache live"},
+  {"step":259,"scope":"wrk-registry-tests","context":"No tests.","task":"Unit & e2e Supertest pentru endpoints registry.","dirs":["/core/apps/admin-core/api/tests/"],"constraints":"","output":"tests verde"},
+  {"step":260,"scope":"wrk-registry-helm","context":"Cron deploy.","task":"CronJob manifest `worker-reg-health` în chart admin-core.","dirs":["/infra/helm/admin-core/"],"constraints":"","output":"cron job live"},
+  {"step":261,"scope":"wrk-registry-dashboard","context":"Observability.","task":"Grafana panel worker count, missing workers.","dirs":["/infra/grafana/provisioning/dashboards/"],"constraints":"","output":"panel workers"},
+  {"step":262,"scope":"wrk-registry-alert","context":"Alert slack.","task":"Alertmanager rule alert if missing_workers>0 for 5m.","dirs":["/infra/k8s/alertmanager/"],"constraints":"","output":"alert activ"},
+  {"step":263,"scope":"wrk-registry-docs","context":"API doc.","task":"Adaugă secțiune Worker Registry în `docs/api/admin-core.md`.","dirs":["/docs/api/"],"constraints":"","output":"doc actualizat"},
+  {"step":264,"scope":"bus-spec-doc","context":"Conventions draft.","task":"Creează `docs/event-bus/v1-spec.md` cu naming `<worker.tag>` & `<module>.<ctx>.<event>`.","dirs":["/docs/event-bus/"],"constraints":"markdown table.","output":"spec public"},
+  {"step":265,"scope":"bus-sdk-ts","context":"Consumer boilerplate.","task":"Adaugă clasa `EventBusClient` în `packages/sdk-ts` cu publish/subscribe helpers.","dirs":["/packages/sdk-ts/"],"constraints":"typed generics.","output":"sdk bus"},
+  {"step":266,"scope":"bus-contract-tests","context":"Spec v1 gata (264).","task":"PactJS publisher & consumer pentru `ocr`, `pdf.render`, `email.send`; coverage ≥90 %.","dirs":["/tests/contract/event-bus/"],"constraints":"","output":"contract tests 3×"},
+  {"step":267,"scope":"bus-lint-hook","context":"Naming enforcement.","task":"Pre-commit hook `scripts/lint-rmq.sh` validează topic vs spec.","dirs":["/scripts/"],"constraints":"shellcheck pass.","output":"hook activ"},
+  {"step":268,"scope":"bus-ci-lint","context":"CI enforce.","task":"Job `rmq-lint` în CI template.","dirs":["/.github/workflows/ci-template.yml"],"constraints":"","output":"lint job"},
+  {"step":269,"scope":"bus-prom-exporter","context":"Metrics.","task":"Deploy RMQ exporter helm release `infra/helm/rmq-exporter/`.","dirs":["/infra/helm/"],"constraints":"","output":"metrics expuse"},
+  {"step":270,"scope":"bus-dashboard","context":"Exporter RMQ up (270).","task":"Dashboard Grafana RMQ throughput + latency, UID `rmq_core`.","dirs":["/infra/grafana/provisioning/dashboards/"],"constraints":"","output":"dashboard RMQ"},
+  {"step":271,"scope":"bus-secret","context":"Credențiale.","task":"ExternalSecret RMQ creds dev.","dirs":["/infra/k8s/"],"constraints":"ESO.","output":"secret sync"},
+  {"step":272,"scope":"bus-docs-api","context":"API bus.","task":"Adaugă exemple publish în `docs/sdk/event-bus.md`.","dirs":["/docs/sdk/"],"constraints":"","output":"doc gata"},
+  {"step":273,"scope":"script-worker-snippet","context":"CLI trebuie extins înainte de generarea worker‑ilor.","task":"Extinde `scripts/create-worker.py` cu snippet `celeryconfig` + init structlog.","dirs":["/scripts/create-worker.py"],"constraints":"","output":"CLI update"},
+  {"step":274,"scope":"workers-core-skel","context":"Workers module inexistent.","task":"Creează mono-repo `workers-core` în `/core/apps/workers-core/`.","dirs":["/core/apps/workers-core/"],"constraints":"poetry init.","output":"skeleton workers"},
+  {"step":275,"scope":"workers-poetry-deps","context":"Deps Python.","task":"poetry add `paddleocr` `aiosmtplib` `structlog>=24` `opentelemetry-exporter-prometheus`.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"deps actualizate"},
+  {"step":276,"scope":"workers-celery-conf","context":"Queue map.","task":"Create file `celeryconfig.py` queue `ocr`, `pdf.render`, `email.send`.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"celery conf"},
+  {"step":277,"scope":"workers-env","context":"Vars.","task":"Actualizează `.env.example` worker vars (SMTP_HOST, RMQ_URL).","dirs":["/"],"constraints":"","output":".env.example upd"},
+  {"step":278,"scope":"worker-ocr","context":"ocr absent.","task":"`scripts/create-worker.py --tag ocr` → FastAPI health + Celery task `ocr.extract`.","dirs":["/core/apps/workers-core/ocr/"],"constraints":"GPU=false.","output":"worker ocr"},
+  {"step":279,"scope":"worker-pdf-render","context":"Stack oficial Python 3.13.","task":"`scripts/create-worker.py --tag pdf.render` → FastAPI health + Celery task `pdf.render.generate`; folosește **pyppeteer** (Chromium headless) şi salvează PDF în MinIO.","dirs":["/core/apps/workers-core/pdf-render/"],"constraints":"timeout 60 s; size ≤ 10 MB; unit‑test coverage 85 %.","output":"worker pdf.render (Python) live"},
+  {"step":280,"scope":"worker-email-send","context":"email.send absent.","task":"Scaffold worker Python `email.send` aiosmtplib.","dirs":["/core/apps/workers-core/email-send/"],"constraints":"","output":"worker email"},
+  {"step":281,"scope":"workers-unit-tests","context":"No tests.","task":"Pytest pentru ocr & email (mock).","dirs":["/core/apps/workers-core/"],"constraints":"","output":"pytest verde"},
+  {"step":282,"scope":"workers-int-tests","context":"Integration.","task":"Test pipeline Celery → RMQ → worker result Redis.","dirs":["/tests/integration/workers/"],"constraints":"","output":"tests pass"},
+  {"step":283,"scope":"workers-dockerfiles","context":"Images.","task":"Dockerfile slim pentru fiecare worker, labels SLSA.","dirs":["/docker/"],"constraints":"","output":"images build"},
+  {"step":284,"scope":"workers-ci","context":"CI generic.","task":"Job matrix build/test/scan workers tags; push ghcr.","dirs":["/.github/workflows/ci-template.yml"],"constraints":"","output":"CI workers"},
+  {"step":285,"scope":"workers-helm-chart","context":"Deploy.","task":"Chart `infra/helm/workers-core/` cu Deployment per tag + Celery configmap.","dirs":["/infra/helm/workers-core/"],"constraints":"","output":"chart oci"},
+  {"step":286,"scope":"workers-otel","context":"Exporter Signalfx incompatibil.","task":"Configurează `opentelemetry-exporter-prometheus`; elimină `celery-signalfx`.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"OTEL Prom metrics"},
+  {"step":287,"scope":"workers-prom","context":"Metrics.","task":"Expose `/metrics` via prometheus_fastapi_instrumentator.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"metrics worker"},
+  {"step":288,"scope":"workers-dashboard","context":"Grafana.","task":"Dashboard lag Celery, task success rate.","dirs":["/infra/grafana/provisioning/dashboards/"],"constraints":"","output":"dashboard workers"},
+  {"step":289,"scope":"workers-alerting","context":"Alert rules.","task":"Alertmanager alert task_failed_rate>5%.","dirs":["/infra/k8s/alertmanager/"],"constraints":"","output":"alert rules"},
+  {"step":290,"scope":"workers-hpa","context":"Autoscale.","task":"HPA CPU 70% min1 max10 per worker.","dirs":["/infra/helm/workers-core/"],"constraints":"","output":"HPA rules"},
+  {"step":291,"scope":"workers-keda-autoscale","context":"KEDA operator instalat în step 33 F0","task":"Definește `ScaledObject` per worker (`queueLength ≥ 100`) + `ScaledJob` backlog drain pentru `pdf.render`.","dirs":["/infra/helm/workers-core/"],"constraints":"HPA lege 1‑10 replica; `cooldownPeriod=120s`.","output":"autoscaling backlog activ"},
+  {"step":292,"scope":"workers-opa-image","context":"latest tag ban.","task":"ConstraintTemplate `CTNoLatest` + Constraint `NoLatestWorkers`.","dirs":["/infra/policies/opa/"],"constraints":"","output":"policy activ"},
+  {"step":293,"scope":"workers-docs","context":"Readme.","task":"Adaugă README workers-core cu usage & queues.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"doc worker"},
+  {"step":294,"scope":"obs-servicemon-shell","context":"Prom scrape Shell.","task":"ServiceMonitor shell-frontend added namespace gateway.","dirs":["/infra/k8s/"],"constraints":"","output":"SM shell"},
+  {"step":295,"scope":"obs-loki-schema","context":"Logs worker.","task":"Include labels `worker_tag` în structlog config.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"logs enriched"},
+  {"step":296,"scope":"obs-trace-join","context":"Trace join.","task":"Tempo config exemplu `span_metrics` pentru worker-chain.","dirs":["/infra/tempo/"],"constraints":"","output":"join traces"},
+  {"step":297,"scope":"obs-k6-shell","context":"Synthetic.","task":"k6 script 200 VU 30s / nav; threshold error_rate<0.5%.","dirs":["/tests/k6/"],"constraints":"","output":"k6 report"},
+  {"step":298,"scope":"script-module-flag","context":"DX create-module.","task":"Adaugă flag `--with-shell-nav` ce actualizează meniu automat.","dirs":["/scripts/create-module.ts"],"constraints":"","output":"flag nou"},
+  {"step":299,"scope":"docs-f1-recap","context":"Final F1.","task":"Creează `docs/F1_core_platform.md` sumar pași 200-299 și criterii Gate F1.","dirs":["/docs/"],"constraints":"diagramă Mermaid optional.","output":"doc recap"}
+]
+```
