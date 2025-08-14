@@ -1781,9 +1781,10 @@ Directoarele permise la rădăcină sunt **exact** cele enumerate în structura 
 **ATENȚIE**: Fișierele de roadmap și README existente conțin încă referințe la căile vechi și trebuie actualizate:
 
 ### Roadmap-uri de actualizat:
-- `5_roadmap_admin_core.md` - toate `"/apps/admin-core/"` → `"/core/apps/admin-core/"`
-- `4_roadmap_shell_gateway.md` - toate `"/apps/shell-gateway/"` → `"/core/apps/shell-gateway/"`
-- `6_roadmap_base_workers.md` - toate `"/apps/workers-core/"` → `"/core/apps/workers-core/"`
+- ✅ `5_roadmap_admin_core.md` - actualizat cu `"/core/apps/admin-core/"`
+- ✅ `4_roadmap_shell_gateway.md` - actualizat cu `"/core/apps/shell-gateway/"`  
+- ✅ `6_roadmap_base_workers.md` - actualizat cu `"/core/apps/workers-core/"`
+- ✅ `8_roadmap_vettify.md` - actualizat cu numerotare F2 sincronizată
 - `3_roadmap_f_1_Core_Platform.md` - idem pentru toate căile core
 
 ### README-uri de actualizat:
