@@ -259,7 +259,7 @@ După ce ai parcurs întregul roadmap, modulul Vettify ar trebui să fie complet
 
 
   {"step":441,"scope":"oauth-social-platforms","context":"Social workers implementați","task":"Configurează OAuth integration pentru Facebook/Instagram, LinkedIn, Twitter/X și TikTok pentru secure API access.","dirs":["/standalone/vettify/apps/api/src/auth/","/core/infra/k8s/external-secrets/"],"constraints":"secure token storage; refresh token handling; commit 'feat(vettify-auth): social oauth'.","output":"OAuth social platforms"},
-  {"step":442,"scope":"gdpr-ai-compliance","context":"Customer intelligence activ","task":"Implementează GDPR compliance pentru AI data processing: consent management, data anonymization, right to be forgotten.","dirs":["/standalone/vettify/apps/api/src/compliance/"],"constraints":"EU GDPR compliant; audit trails; commit 'feat(vettify-compliance): gdpr ai'.","output":"GDPR AI compliance"},
+  {"step":442,"scope":"gdpr-ai-compliance","context":"Customer intelligence activ","task":"Implementează GDPR compliance pentru AI data processing: integrare cu workers `gdpr.consent.ai`, `gdpr.rtbf`, `gdpr.classify`, `gdpr.audit.ai` pentru consent management, data anonymization, right to be forgotten și AI audit trails.","dirs":["/standalone/vettify/apps/api/src/compliance/","/standalone/vettify/apps/api/src/services/gdpr/"],"constraints":"EU GDPR compliant; audit trails; real-time consent validation; AI transparency; commit 'feat(vettify-compliance): gdpr ai integration'.","output":"GDPR AI compliance cu workers integration"},
   {"step":443,"scope":"ai-testing-framework","context":"AI features complete","task":"Creează AI testing framework pentru validarea accurateței modelelor și performance testing pentru AI workers.","dirs":["/standalone/vettify/tests/ai-framework/"],"constraints":"accuracy metrics; performance benchmarks; commit 'test(vettify-ai): testing framework'.","output":"AI testing framework"},
   {"step":444,"scope":"ai-monitoring-dashboard","context":"AI testing implementat","task":"Dezvoltă comprehensive AI monitoring dashboard cu model performance, accuracy trends și resource utilization.","dirs":["/core/infra/grafana/provisioning/dashboards/"],"constraints":"real-time metrics; alerting; commit 'feat(obs): ai monitoring dashboard'.","output":"AI monitoring dashboard"},
   {"step":445,"scope":"competitive-intelligence","context":"AI monitoring activ","task":"Implementează competitive intelligence system pentru tracking HubSpot/Salesforce features și gap analysis.","dirs":["/standalone/vettify/apps/workers/competitive-intelligence/"],"constraints":"web scraping compliance; trend analysis; commit 'feat(vettify-ai): competitive intelligence'.","output":"competitive intelligence system"},
@@ -322,11 +322,12 @@ Steps 411-450 transformă Vettify.app într-un CRM de **ULTIMĂ GENERAȚIE** cu 
 * **Real-time Processing**: PostgreSQL 17 cu pgvector pentru time-series analytics, RabbitMQ streaming pentru high-volume events
 
 ### **🛡️ Considerații Critice**
-* **Privacy & GDPR**: Toate AI features TREBUIE să fie GDPR compliant cu consent management
+* **Privacy & GDPR**: Toate AI features TREBUIE să fie GDPR compliant cu consent management - integrare cu workers `gdpr.consent.ai`, `gdpr.rtbf`, `gdpr.classify`, `gdpr.audit.ai`
 * **API Rate Limits**: Respectă strict limitele platformelor sociale (Facebook, LinkedIn, Twitter, TikTok)
 * **Cost Optimization**: Implementează cost monitoring pentru API calls AI (OpenAI, Claude, Azure)
 * **Security**: OAuth secure pentru toate integrările sociale + token refresh automat
 * **Performance**: Sub-second response pentru AI insights cu caching Redis + pgvector
+* **AI Ethics**: Transparența algoritmică, bias detection, explainable AI prin worker `gdpr.audit.ai`
 
 ### **🎨 UX/UI Diferențiatori**
 * **Real-time Dashboards**: Social sentiment, call analysis, pricing optimization în timp real
