@@ -29,6 +29,22 @@
 | Bus   | RabbitMQ 3.14, Redis 7 (BullMQ) | nu Kafka/NATS. |
 | IaC   | Terraform 1.9, Helmfile, Argo CD | nu Pulumi/Ansible roles directe. |
 | Observability | Prometheus 2.50, Loki 3, Tempo 2, Grafana 10 | invariabil. |
+| Security | Trivy scanner, Cosign signing | praguri standard. |
+
+### **Standardul de Securitate – Obligatoriu pentru toate modulele**
+
+**Trivy Scanner Praguri Standard:**
+- **CRITICAL = 0** (toleranță zero pentru vulnerabilități critice)
+- **HIGH ≤ 3** (maxim 3 vulnerabilități înalte acceptabile în production)  
+- **MEDIUM ≤ 15** (maxim 15 vulnerabilități medii acceptabile în development)
+
+**Cosign Integration Standard:**
+- Dockerfile creation cu multi-stage builds
+- Helm charts cu imagini semnate Cosign
+- CI/CD cu SBOM generation și Cosign signing
+- ArgoCD cu cosign verify obligatoriu la deployment
+
+**Aceste praguri sunt OBLIGATORII pentru toate modulele și nu pot fi modificate fără aprobare arhitect.**
 
 ## Structură directoare – **întocmai**
 
