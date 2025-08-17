@@ -68,6 +68,13 @@
 
 **Acești 12 workeri AI sunt OFICIALMENTE VALIDAȚI pentru stackul GeniusERP și vor fi implementați în `/core/apps/workers-core/` cu suport GPU enterprise-grade.**
 
+**Business Critical Workers (Operations & Security):**
+- `risk.fraud.scoring` - ML fraud detection pentru Mercantiq Sales cu scikit-learn + XGBoost pentru transaction scoring
+- `route.optimization.ai` - TSP/VRP route optimization pentru iWMS cu OR-Tools + NetworkX pentru picking efficiency
+- `slotting.optimization.ai` - ABC analysis + velocity-based slotting pentru iWMS cu pandas + scikit-learn pentru inventory optimization
+
+**Acești 3 workeri business critical sunt ESENȚIALI pentru operațiunile de zi cu zi și vor fi implementați în `/core/apps/workers-core/` cu performanțe garantate.**
+
 ## Structură directoare – **întocmai**
 
 - Răspunsurile care includ calea fișierelor trebuie să respecte piramida revizuită:
