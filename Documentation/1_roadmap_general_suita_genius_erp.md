@@ -57,7 +57,7 @@
 | 3‑2 | 3 SW  | **Numeriqo Accounting** – Plan Conturi RO, balanțe, SAF‑T | numeriqo‑accounting | 3‑1 |
 | 3‑3 | 3 SW  | **Numeriqo People & Payroll** – motor salarizare RO | numeriqo‑people | 3‑2 |
 
-**Roadmaps:** `roadmap/numeriqo-manufacturing.md`, `roadmap/numeriqo-accounting.md`, `roadmap/numeriqo-people.md`
+**Roadmaps:** `roadmap/numeriqo/manufacturing.md`, `roadmap/numeriqo/accounting.md`, `roadmap/numeriqo/people.md`
 
 ---
 
