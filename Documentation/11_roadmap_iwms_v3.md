@@ -1,4 +1,4 @@
-# 11 · Roadmap iWMS v3 – **versiune upgradată** (workeri + integrare suita)
+# 11 · Roadmap iWMS v3 - **versiune upgradată** (workeri + integrare suita)
 
 > **Scop:** să implementăm **iWMS v3** ca modulul responsabil de **Warehouse Management** în suita GeniusERP – cu integrare profundă de **workeri** (forecast, pdf.render, ocr, match.ai) și interoperabilitate **suite & stand‑alone** cu **Mercantiq Sales**, **Procurement**, **CRM (Vettify)** și ecosistemul complet.
 > **Stack fix:** React 19 + Vite 5 Federation + MUI 6 + Tailwind 3 (UI), NestJS 11 (API), Python 3.13 (workers), RMQ 3.14 + Redis 7 (bus), PostgreSQL 17 + pgvector, MinIO SSE‑C, Terraform + Helmfile + ArgoCD (deploy). Respectă convențiile de nume evenimente `module.ctx.event`. Folosește doar căile canonice `standalone/iwms/**`.
@@ -7,7 +7,7 @@
 **Bounded‑context iWMS:** warehouse, zone, bin, item, stock, picklist, wave, shipment, adjustment cu automatizare completă și inteligență artificială pentru forecast și optimizări operaționale.
 
 **Workeri integrați (disponibili azi în flotă):**
-`forecast` (predicții cerere și ROP/SS), `pdf.render` (etichete și BOL), `ocr` (recepție automată), `email.send` (notificări), `match.ai` (optimizări wave și slotting)
+`forecast` (predicții cerere și ROP/SS), `pdf.render` (etichete și BOL), `ocr` (recepție automată), `email.send` (notificări), `match.ai` (optimizări generale), `route.optimization.ai` (optimizare rute picking), `slotting.optimization.ai` (optimizare slotting ABC)
 **Date & securitate:** Multi‑tenant PG 17 + pgvector + MinIO per tenant (SSE‑C AES‑256‑GCM), Redis per tenant; JWT RS256 cu claims `tid`,`whid`,`scp`,`role`; RLS strictă pe `tid/whid`.
 **Observabilitate:** Prometheus metrics, Tempo traces end‑to‑end (browser→API→RMQ→worker), dashboards dedicați O2C/P2P & alerte.
 
@@ -23,12 +23,12 @@ Această documentație reprezintă un roadmap detaliat pentru dezvoltarea aplica
 
 **Respectă constraints:** Câmpul constraints include cerințe stricte precum respectarea convențiilor de commit (Conventional Commits), rularea linter‑elor, integrarea cu External Secrets pentru credențiale, și condiții de performanță și securitate.
 
-**Navighează după scope:** Pașii sunt grupați logic prin câmpul scope (ex. "scaffold‑*", "db‑*", "svc‑*", "fe‑*", "security‑*"). Poți prioritiza sau delega anumite sub‑sisteme pe baza acestei clasificări.
+**Navighează după scope:** Pașii sunt grupați logic prin câmpul scope (ex. "scaffold-*", "db-*", "svc-*", "fe-*", "security-*"). Poți prioritiza sau delega anumite sub-sisteme pe baza acestei clasificări.
 
-## 1) Pre‑condiții & Scope
+## 1) Pre-condiții & Scope
 
-* **Gate F1 trecut**: Shell vizibil (3 widget‑uri), Admin Core & Worker Registry verzi.
-* **Event‑Bus v1** și naming `<module>.<ctx>.<event>` deja stabilite; hook `scripts/lint-rmq.sh` obligatoriu.
+* **Gate F1 trecut**: Shell vizibil (3 widget-uri), Admin Core & Worker Registry verzi.
+* **Event-Bus v1** și naming `<module>.<ctx>.<event>` deja stabilite; hook `scripts/lint-rmq.sh` obligatoriu.
 * **Multitenancy & date**: PostgreSQL 17 (cluster per tenant, schema per modul), MinIO per tenant, Redis per tenant, **RLS pe `tid/whid/mid`**.
 * **Worker Fleet** disponibil: `forecast`, `pdf.render`, `ocr`, `email.send`, `match.ai`.
 * **Stack fix**: React 19 + Vite 5 Federation + MUI 6 + Tailwind 3 (UI), NestJS 11 (API), Python 3.13 (workeri), RabbitMQ 3.14 + Redis 7 (bus/queue), PostgreSQL 17 + pgvector, IaC: Terraform + Helmfile + Argo CD.
@@ -65,7 +65,9 @@ Această documentație reprezintă un roadmap detaliat pentru dezvoltarea aplica
 * `pdf.render` - generare etichete bin/item, BOL și packing slips
 * `ocr` - procesare automată documente furnizor pentru matching GRN
 * `email.send` - notificări pentru devieri, alerte și confirmări
-* `match.ai` - optimizări wave planning, slotting și similitudini produse
+* `match.ai` - optimizări generale wave planning și similitudini produse
+* `route.optimization.ai` - optimizare rute picking, travel time minimization, multi-picker coordination
+* `slotting.optimization.ai` - optimizare slotting dinamic, ABC analysis automation, velocity-based positioning
 
 ## 3) Arhitectura Aplicației
 
@@ -178,23 +180,23 @@ standalone/iwms/
   {"step":318,"scope":"guards-interceptors","context":"Auth & observabilitate","task":"JWT guard extins (claims `tid,whid,scp,role`), interceptors OTEL trace-id în headers RMQ","dirs":["/standalone/iwms/apps/api/src/guards/","/standalone/iwms/apps/api/src/interceptors/"],"constraints":"unit tests 80%","output":"securitate API"},
   {"step":319,"scope":"repositories","context":"Acces date performant","task":"Repo-uri custom (stock, reservations, waves) cu query-uri index-friendly","dirs":["/standalone/iwms/apps/api/src/repositories/"],"constraints":"explain analyze în tests","output":"repo-uri optimizate"},
   {"step":320,"scope":"svc-stock-core","context":"Servicii domeniu","task":"`StockService` (get/hold/release/move) cu tranzacții și blocaje conservative","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"idempotent; retries backoff","output":"serviciu stoc"},
-  {"step":321,"scope":"svc-alloc","context":"Alocare pick","task":"`AllocService` — rezervă stoc pe SO; suport FEFO/LIFO, lot, serie","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"policy config din Admin Core","output":"serviciu alocare"},
-  {"step":322,"scope":"svc-wave","context":"Planificare wave","task":"`WaveService` — grupează picklists, optimizează rute/zone/bins","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"p95<200ms pe 1k linii","output":"serviciu wave"},
-  {"step":323,"scope":"svc-putaway","context":"Depozitare","task":"`PutawayService` — loc recomandat (heuristică zone/bin capacity) + execuție","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"fallback simplu dacă lipsesc reguli","output":"serviciu putaway"},
-  {"step":324,"scope":"svc-receiving","context":"Recepție (GRN)","task":"`ReceivingService` — recepție PO, validări cant./lot/batch, generare GRN","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"RLS & audit trail","output":"serviciu GRN"},
-  {"step":325,"scope":"svc-shipment","context":"Expediții","task":"`ShipmentService` — packing, etichetare, AWB, confirm ship","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"persistă doc în MinIO (SSE-C)","output":"serviciu shipment"},
-  {"step":326,"scope":"svc-adjustments","context":"Ajustări inventar","task":"`AdjustmentService` — +/− stoc cu motive și aprobare (RBAC)","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"journal în `stock_tx`","output":"serviciu adjust"},
-  {"step":327,"scope":"ctrl-receiving","context":"API recepții","task":"Controller `ReceivingController` (POST /grn) — postează GRN și publică `wms.grn.posted`","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/receiving/"],"constraints":"DTO stricte; e2e tests","output":"endpoint GRN"},
-  {"step":328,"scope":"ctrl-putaway","context":"API putaway","task":"`PutawayController` — recomandă bin target + confirmare mutare","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/putaway/"],"constraints":"trace RMQ header","output":"endpoint putaway"},
-  {"step":329,"scope":"ctrl-picking","context":"API picking","task":"`PickingController` — create/confirm picklist; publică `wms.picklist.created`","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/picking/"],"constraints":"AbortController timeout 3s","output":"endpoint picking"},
-  {"step":330,"scope":"ctrl-wave","context":"API wave","task":"`WaveController` — planifică/lansează wave; calculează KPI pick efficiency","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/wave/"],"constraints":"p95<250ms","output":"endpoint wave"},
-  {"step":331,"scope":"ctrl-shipment","context":"API shipping","task":"`ShipmentController` — confirmă packing/ship; publică `wms.picklist.completed`","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/shipment/"],"constraints":"persist docs MinIO","output":"endpoint shipment"},
-  {"step":332,"scope":"ctrl-inventory","context":"API inventory","task":"`InventoryController` — status stoc, rezervări, lot/serie, locații","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/inventory/"],"constraints":"cache Redis 30s","output":"endpoint inventar"},
-  {"step":333,"scope":"ctrl-adjust","context":"API adjustments","task":"`AdjustmentController` — +/− stoc cu aprobare RBAC","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/adjustment/"],"constraints":"audit + RLS","output":"endpoint adjust"},
-  {"step":334,"scope":"ctrl-cycle-count","context":"API numărătoare","task":"`CycleCountController` — plan/execuție numărătoare ciclice, toleranțe","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/inventory/"],"constraints":"eveniment `wms.inventory.adjusted` la final","output":"endpoint cycle-count"},
-  {"step":335,"scope":"events-publish","context":"Bus v1","task":"Implementă publisher pentru `wms.*` cu idempotency key și `x-corr-id`","dirs":["/standalone/iwms/apps/api/src/services/bus/"],"constraints":"contract-tests bus","output":"publishers iWMS"},
-  {"step":336,"scope":"events-consume-so","context":"Integrare Sales","task":"Consumer `sales.order.created` → `AllocService` + `PickingController` create","dirs":["/standalone/iwms/apps/api/src/services/bus/"],"constraints":"retries/backoff; DLQ","output":"consume SO"},
-  {"step":337,"scope":"events-consume-po","context":"Integrare Procurement","task":"Consumer `procurement.po.approved` → `ReceivingService` create GRN plan","dirs":["/standalone/iwms/apps/api/src/services/bus/"],"constraints":"DLQ + alert dacă invalid","output":"consume PO"},
+  {"step":321,"scope":"svc-alloc","context":"Alocare pick","task":"`AllocService` - rezervă stoc pe SO; suport FEFO/LIFO, lot, serie","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"policy config din Admin Core","output":"serviciu alocare"},
+  {"step":322,"scope":"svc-wave","context":"Planificare wave","task":"`WaveService` - grupează picklists, optimizează rute/zone/bins cu `route.optimization.ai` pentru travel time minimization și multi-picker coordination","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"p95<200ms pe 1k linii; route optimization < 5s pentru 100+ items","output":"serviciu wave cu AI route optimization"},
+  {"step":323,"scope":"svc-putaway","context":"Depozitare","task":"`PutawayService` - loc recomandat cu `slotting.optimization.ai` pentru velocity-based positioning și ABC analysis automation + execuție","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"fallback simplu dacă lipsesc reguli; slotting optimization daily; ABC accuracy >95%","output":"serviciu putaway cu AI slotting optimization"},
+  {"step":324,"scope":"svc-receiving","context":"Recepție (GRN)","task":"`ReceivingService` - recepție PO, validări cant./lot/batch, generare GRN","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"RLS & audit trail","output":"serviciu GRN"},
+  {"step":325,"scope":"svc-shipment","context":"Expediții","task":"`ShipmentService` - packing, etichetare, AWB, confirm ship","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"persistă doc în MinIO (SSE-C)","output":"serviciu shipment"},
+  {"step":326,"scope":"svc-adjustments","context":"Ajustări inventar","task":"`AdjustmentService` - +/- stoc cu motive și aprobare (RBAC)","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"journal în `stock_tx`","output":"serviciu adjust"},
+  {"step":327,"scope":"ctrl-receiving","context":"API recepții","task":"Controller `ReceivingController` (POST /grn) - postează GRN și publică `wms.grn.posted`","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/receiving/"],"constraints":"DTO stricte; e2e tests","output":"endpoint GRN"},
+  {"step":328,"scope":"ctrl-putaway","context":"API putaway","task":"`PutawayController` - recomandă bin target + confirmare mutare","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/putaway/"],"constraints":"trace RMQ header","output":"endpoint putaway"},
+  {"step":329,"scope":"ctrl-picking","context":"API picking","task":"`PickingController` - create/confirm picklist; publică `wms.picklist.created`","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/picking/"],"constraints":"AbortController timeout 3s","output":"endpoint picking"},
+  {"step":330,"scope":"ctrl-wave","context":"API wave","task":"`WaveController` - planifică/lansează wave; calculează KPI pick efficiency","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/wave/"],"constraints":"p95<250ms","output":"endpoint wave"},
+  {"step":331,"scope":"ctrl-shipment","context":"API shipping","task":"`ShipmentController` - confirmă packing/ship; publică `wms.picklist.completed`","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/shipment/"],"constraints":"persist docs MinIO","output":"endpoint shipment"},
+  {"step":332,"scope":"ctrl-inventory","context":"API inventory","task":"`InventoryController` - status stoc, rezervări, lot/serie, locații","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/inventory/"],"constraints":"cache Redis 30s","output":"endpoint inventar"},
+  {"step":333,"scope":"ctrl-adjust","context":"API adjustments","task":"`AdjustmentController` - +/- stoc cu aprobare RBAC","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/adjustment/"],"constraints":"audit + RLS","output":"endpoint adjust"},
+  {"step":334,"scope":"ctrl-cycle-count","context":"API numărătoare","task":"`CycleCountController` - plan/execuție numărătoare ciclice, toleranțe","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/inventory/"],"constraints":"eveniment `wms.inventory.adjusted` la final","output":"endpoint cycle-count"},
+  {"step":335,"scope":"events-publish","context":"Bus v1","task":"Implementă publisher pentru `wms.*` cu idempotency key și `x-corr-id`; integrează workerii `route.optimization.ai` și `slotting.optimization.ai` pentru warehouse intelligence","dirs":["/standalone/iwms/apps/api/src/services/bus/"],"constraints":"contract-tests bus; route optimization < 5s; slotting daily runs","output":"publishers iWMS cu AI workers"},
+  {"step":336,"scope":"events-consume-so","context":"Integrare Sales","task":"Consumer `sales.order.created` -> `AllocService` + `PickingController` create","dirs":["/standalone/iwms/apps/api/src/services/bus/"],"constraints":"retries/backoff; DLQ","output":"consume SO"},
+  {"step":337,"scope":"events-consume-po","context":"Integrare Procurement","task":"Consumer `procurement.po.approved` -> `ReceivingService` create GRN plan","dirs":["/standalone/iwms/apps/api/src/services/bus/"],"constraints":"DLQ + alert dacă invalid","output":"consume PO"},
   {"step":338,"scope":"events-contract-tests","context":"Conform F2","task":"Pact/contract tests pentru `wms.*` cu Sales/Procurement","dirs":["/standalone/iwms/tests/contract/event-bus/"],"constraints":"CI gate obligatoriu","output":"contract tests verzi"},
   {"step":339,"scope":"events-lint","context":"Conveții naming","task":"Integrează `scripts/cli/sync-topic-names.ts` și `lint-rmq.sh` pe iWMS","dirs":["/standalone/iwms/scripts/","/core/scripts/"],"constraints":"fail pe abateri","output":"naming validat"},
   {"step":340,"scope":"fe-layout","context":"FE skeleton","task":"AppBar/Drawer/Outlet + navigație dinamică furnizată de Admin Core `/v1/admin/nav`","dirs":["/standalone/iwms/apps/frontend/src/"],"constraints":"fallback static","output":"layout FE"},
@@ -216,7 +218,7 @@ standalone/iwms/
   {"step":356,"scope":"doc-webhooks","context":"Distribuție","task":"Webhook post-ship către Sales cu URL documente sigure (expirare)","dirs":["/standalone/iwms/apps/api/src/services/warehouse/doc/"],"constraints":"signed URLs","output":"webhook trimis"},
   {"step":357,"scope":"forecast-contract","context":"Integrare worker","task":"Definește contract API ↔ worker `forecast` (input: sales history, lead time; output: ROP, SS)","dirs":["/standalone/iwms/apps/workers/forecast.adapter/"],"constraints":"Ray cluster; timeouts","output":"contract definit"},
   {"step":358,"scope":"forecast-cron","context":"Planificare","task":"Cron zilnic pentru recomput ROP/SS pe iteme active; publish `ai.stock.forecasted`","dirs":["/standalone/iwms/apps/workers/forecast.adapter/","/standalone/iwms/infra/k8s/"],"constraints":"cooldown 24h","output":"forecast zilnic"},
-  {"step":359,"scope":"forecast-ui","context":"UI replenishment","task":"Pagină „Replenishment" cu ROP/SS, propuneri PO/transfer între depozite","dirs":["/standalone/iwms/apps/frontend/src/pages/"],"constraints":"export CSV","output":"UI ROP/SS"},
+  {"step":359,"scope":"forecast-ui","context":"UI replenishment","task":"Pagină \"Replenishment\" cu ROP/SS, propuneri PO/transfer între depozite","dirs":["/standalone/iwms/apps/frontend/src/pages/"],"constraints":"export CSV","output":"UI ROP/SS"},
   {"step":360,"scope":"forecast-approve","context":"Execuție","task":"Endpoint POST `/replenishment/approve` → publică evenimente spre Procurement pentru PO draft","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/"],"constraints":"RBAC; idempotent","output":"PO draft events"},
   {"step":361,"scope":"forecast-metrics","context":"Observabilitate AI","task":"OTEL spans + Prom metrics (MAPE, service time) pentru forecast pipeline","dirs":["/standalone/iwms/apps/workers/forecast.adapter/"],"constraints":"grafana labels `tid,mid`","output":"metrici forecast"},
   {"step":362,"scope":"forecast-backfill","context":"Bootstrap","task":"Task backfill istoric 12 luni din Sales pentru inițializare model","dirs":["/standalone/iwms/apps/workers/forecast.adapter/"],"constraints":"rate-limit RMQ","output":"backfill rulat"},
@@ -227,7 +229,7 @@ standalone/iwms/
   {"step":367,"scope":"slotting-report","context":"Vizibilitate","task":"Raport heatmap slotting (turnover×distance); widget Grafana custom","dirs":["/standalone/iwms/infra/grafana/provisioning/dashboards/"],"constraints":"uid `iwms_slotting`","output":"dashboard slotting"},
   {"step":368,"scope":"returns-flow","context":"Reverse logistics","task":"Flow retururi: RMA → recepție → sortare (restock/scrap)","dirs":["/standalone/iwms/apps/api/src/controllers/warehouse/","/standalone/iwms/apps/frontend/src/pages/"],"constraints":"evenimente retur","output":"flow retur"},
   {"step":369,"scope":"quality-hold","context":"Calitate","task":"Statut `quality_hold` pe stoc; blocare alocare până la eliberare","dirs":["/standalone/iwms/apps/api/src/entities/"],"constraints":"RBAC","output":"hold calitate"},
-  {"step":370,"scope":"cycle-count-policy","context":"Inventar continuu","task":"Politici ABC pentru numărătoare ciclice; planificator zilnic","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"alert devieri >2%","output":"plan CC"},
+  {"step":370,"scope":"cycle-count-policy","context":"Inventar continuu","task":"Politici ABC cu `slotting.optimization.ai` pentru automated ABC classification și cycle scheduling; planificator zilnic","dirs":["/standalone/iwms/apps/api/src/services/warehouse/"],"constraints":"alert devieri >2%; AI-driven ABC analysis; slotting optimization daily","output":"plan CC cu AI ABC analysis"},
   {"step":371,"scope":"fe-kpi-widgets","context":"KPI operaționali","task":"Widgets KPI (pick rate, dock-to-stock, order-to-ship)","dirs":["/standalone/iwms/apps/frontend/src/widgets/kpi/"],"constraints":"Loki/LokiQL pentru logs","output":"widgets KPI"},
   {"step":372,"scope":"k6-scenarios","context":"Perf KPI","task":"k6: 100 RPS pe `/picklists` p95<250ms; 50 RPS `/grn`","dirs":["/standalone/iwms/tests/k6/"],"constraints":"grafana datasource","output":"raport k6"},
   {"step":373,"scope":"rmq-autoscale","context":"Backlog","task":"KEDA ScaledObject pe cozi `wms.*` (queueLength ≥ 100)","dirs":["/standalone/iwms/infra/helm/","/standalone/iwms/infra/k8s/"],"constraints":"cooldown 120s","output":"autoscaling cozi"},
