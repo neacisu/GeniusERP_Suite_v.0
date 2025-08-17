@@ -46,6 +46,28 @@
 
 **Aceste praguri sunt OBLIGATORII pentru toate modulele și nu pot fi modificate fără aprobare arhitect.**
 
+### **Workers AI Avansați – Validați Oficial pentru Stack**
+
+**Social Media AI Workers (Next-Generation CRM):**
+- `facebook.pixel.ai` - Facebook/Instagram pixel analysis cu GPT-4 + pgvector pentru audience intelligence
+- `linkedin.sales.ai` - LinkedIn Sales Navigator cu Anthropic Claude pentru B2B lead generation
+- `twitter.sentiment.ai` - Real-time sentiment analysis cu VADER + Transformers pentru brand monitoring
+- `tiktok.analytics.ai` - TikTok Business API cu Computer Vision pentru content marketing
+
+**Customer Intelligence AI Workers (Advanced CRM):**
+- `vision.call.analysis` - Computer vision pentru video calls cu OpenCV + MediaPipe + emotion detection
+- `voice.sentiment.ai` - Voice-to-text + sentiment cu Whisper + AssemblyAI pentru conversation intelligence
+- `behavior.pattern.ai` - Behavioral pattern recognition cu TensorFlow + PyTorch pentru predictive analytics
+- `content.personalization.ai` - AI-driven content recommendations cu GPT-4 pentru marketing automation
+
+**Marketing AI Modern Workers (HubSpot/Salesforce Killer):**
+- `ab.testing.ml` - Automated A/B testing cu scipy.stats + MLlib pentru campaign optimization
+- `dynamic.pricing.ai` - Real-time pricing cu XGBoost + time series pentru revenue optimization
+- `attribution.modeling.ai` - Cross-channel attribution cu Markov chains pentru attribution intelligence
+- `campaign.optimization.ai` - Campaign automation cu Reinforcement Learning pentru intelligent campaigns
+
+**Acești 12 workeri AI sunt OFICIALMENTE VALIDAȚI pentru stackul GeniusERP și vor fi implementați în `/core/apps/workers-core/` cu suport GPU enterprise-grade.**
+
 ## Structură directoare – **întocmai**
 
 - Răspunsurile care includ calea fișierelor trebuie să respecte piramida revizuită:
