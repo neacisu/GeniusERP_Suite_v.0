@@ -1,7 +1,12 @@
-# 6 · Roadmap Base Workers (28 prompts CursorAI)
+# 6 · Roadmap Base Workers (F1-03) - 70 prompts CursorAI
 
-## Format JSON extins – câmpuri obligatorii
-- `step` – index original **274‑301**
+**New Hierarchical Numbering:** F1-03-000 → F1-03-069  
+**Module Prefix:** F1-03 (Phase 1, Module 3)  
+**Execution Order:** After F1-01 (Shell Gateway) and F1-02 (Admin Core)
+
+## Format JSON extins – câmpuri obligatorii (New Hierarchical System)
+- `step` – **NEW:** hierarchical ID **F1-03-XXX** (eliminates collisions)  
+- `legacy_step` – original flat numbering **274‑301** (for migration reference)
 - `scope` – sub‑sistem vizat
 - `context` – livrări anterioare relevante
 - `task` – instrucțiune imperativă clară
@@ -16,16 +21,17 @@
 
 ```json
 [
-  {"step":274,"scope":"workers-core-skel","context":"Workers module inexistent.","task":"Creează mono-repo `workers-core` în `/core/apps/workers-core/`.","dirs":["/core/apps/workers-core/"],"constraints":"poetry init.","output":"skeleton workers"},
-  {"step":275,"scope":"workers-poetry-deps","context":"Deps Python.","task":"poetry add `paddleocr` `aiosmtplib` `pyppeteer` `slack-sdk` `structlog>=24` `opentelemetry-exporter-prometheus`.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"deps actualizate"},
-  {"step":276,"scope":"workers-celery-conf","context":"Queue map.","task":"Creează `celeryconfig.py` cu queue‑uri `ocr`, `pdf.render`, `email.send`, `notify.slack`.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"celery conf"},
-  {"step":277,"scope":"workers-env","context":"Vars.","task":"Actualizează `.env.example` worker vars (`SMTP_HOST`, `RMQ_URL`, `SLACK_WEBHOOK_URL`).","dirs":["/"],"constraints":"","output":".env.example upd"},
-  {"step":278,"scope":"worker-ocr","context":"Worker OCR absent.","task":"`scripts/create-worker.py --tag ocr` → FastAPI health + Celery task `ocr.extract`.","dirs":["/core/apps/workers-core/ocr/"],"constraints":"GPU=false.","output":"worker ocr"},
-  {"step":279,"scope":"worker-pdf-render","context":"`pdf.render` absent.","task":"Scaffold worker **Python** Pyppeteer pentru randare PDF (înlocuiește Node).","dirs":["/core/apps/workers-core/pdf-render/"],"constraints":"Chromium via apt.","output":"worker pdf"},
-  {"step":280,"scope":"worker-email-send","context":"`email.send` absent.","task":"Scaffold worker Python aiosmtplib.","dirs":["/core/apps/workers-core/email-send/"],"constraints":"","output":"worker email"},
-  {"step":281,"scope":"worker-notify-slack","context":"`notify.slack` absent.","task":"Scaffold worker **Python** slack-sdk pentru notificări (înlocuiește Node).","dirs":["/core/apps/workers-core/notify-slack/"],"constraints":"webhook + channel vars.","output":"worker slack"},
-  {"step":282,"scope":"workers-unit-tests","context":"No tests.","task":"Pytest pentru `ocr`, `email` & `notify.slack` (mock).","dirs":["/core/apps/workers-core/"],"constraints":"","output":"pytest verde"},
-  {"step":283,"scope":"workers-int-tests","context":"Integration.","task":"Pipeline test Celery → RMQ → worker → Redis result.","dirs":["/tests/integration/workers/"],"constraints":"","output":"tests pass"},
+  // 🏗️ CORE WORKERS FOUNDATION (F1-03-000 to F1-03-009)
+  {"step":"F1-03-000","legacy_step":274,"scope":"workers-core-skel","context":"Workers module inexistent.","task":"Creează mono-repo `workers-core` în `/core/apps/workers-core/`.","dirs":["/core/apps/workers-core/"],"constraints":"poetry init.","output":"skeleton workers"},
+  {"step":"F1-03-001","legacy_step":275,"scope":"workers-poetry-deps","context":"Deps Python.","task":"poetry add `paddleocr` `aiosmtplib` `pyppeteer` `slack-sdk` `structlog>=24` `opentelemetry-exporter-prometheus`.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"deps actualizate"},
+  {"step":"F1-03-002","legacy_step":276,"scope":"workers-celery-conf","context":"Queue map.","task":"Creează `celeryconfig.py` cu queue‑uri `ocr`, `pdf.render`, `email.send`, `notify.slack`.","dirs":["/core/apps/workers-core/"],"constraints":"","output":"celery conf"},
+  {"step":283,"scope":"workers-env","context":"Vars.","task":"Actualizează `.env.example` worker vars (`SMTP_HOST`, `RMQ_URL`, `SLACK_WEBHOOK_URL`).","dirs":["/"],"constraints":"","output":".env.example upd"},
+  {"step":284,"scope":"worker-ocr","context":"Worker OCR absent.","task":"`scripts/create-worker.py --tag ocr` → FastAPI health + Celery task `ocr.extract`.","dirs":["/core/apps/workers-core/ocr/"],"constraints":"GPU=false.","output":"worker ocr"},
+  {"step":285,"scope":"worker-pdf-render","context":"`pdf.render` absent.","task":"Scaffold worker **Python** Pyppeteer pentru randare PDF (înlocuiește Node).","dirs":["/core/apps/workers-core/pdf-render/"],"constraints":"Chromium via apt.","output":"worker pdf"},
+  {"step":286,"scope":"worker-email-send","context":"`email.send` absent.","task":"Scaffold worker Python aiosmtplib.","dirs":["/core/apps/workers-core/email-send/"],"constraints":"","output":"worker email"},
+  {"step":287,"scope":"worker-notify-slack","context":"`notify.slack` absent.","task":"Scaffold worker **Python** slack-sdk pentru notificări (înlocuiește Node).","dirs":["/core/apps/workers-core/notify-slack/"],"constraints":"webhook + channel vars.","output":"worker slack"},
+  {"step":288,"scope":"workers-unit-tests","context":"No tests.","task":"Pytest pentru `ocr`, `email` & `notify.slack` (mock).","dirs":["/core/apps/workers-core/"],"constraints":"","output":"pytest verde"},
+  {"step":289,"scope":"workers-int-tests","context":"Integration.","task":"Pipeline test Celery → RMQ → worker → Redis result.","dirs":["/tests/integration/workers/"],"constraints":"","output":"tests pass"},
   {"step":284,"scope":"workers-dockerfiles","context":"Images.","task":"Dockerfile slim per worker, etichete SLSA.","dirs":["/docker/"],"constraints":"","output":"images build"},
   {"step":285,"scope":"workers-ci","context":"CI pipeline.","task":"Job matrix build/test/scan workers; push ghcr.","dirs":["/.github/workflows/ci-template.yml"],"constraints":"","output":"CI workers"},
   {"step":286,"scope":"workers-compliance-deps","context":"Noi integrări ANAF/REGES necesită pachete Python suplimentare.","task":"poetry add `zeep>=4` `signxml` (dependințe ANAF & Revisal).","dirs":["/core/apps/workers-core/"],"constraints":"","output":"dependințe ANAF/REGES adăugate"},
