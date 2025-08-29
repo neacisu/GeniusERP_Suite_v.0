@@ -160,10 +160,10 @@ Notă: pentru F2 „mobile RF” este implementat ca PWA React (Scanner Web + AP
 
 ### Roadmap‑uri derivate
 
-- `8_roadmap_vettify.md`
-- `9_roadmap_mercantiq_sales_billing.md`
-- `10_roadmap_mercantiq_procurement.md`
-- `11_roadmap_iwms_v3.md`
+- `9_roadmap_f_2_1_vettify.md`
+- `10_roadmap_f_2_2_mercantiq_sales_billing.md`
+- `11_roadmap_f_2_3_mercantiq_procurement.md`
+- `12_roadmap_f_2_4_iwms_v3.md`
 
 ### Note de conformitate cu convențiile proiectului
 

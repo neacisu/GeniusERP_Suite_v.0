@@ -238,7 +238,7 @@ Acești workeri comuni apar în **Worker Registry** (Admin Core) alături de cei
 3. **Generare roadmap-uri** individuale în directorul `roadmap/`
 4. **Kick-off F0** → trecere la execuție
 
-> Pentru reguli stricte de proiectare consultați `0_Instructiuni_stricte_de_proiectare.md`.
+> Pentru reguli stricte de proiectare consultați `1_instructiuni_stricte_de_proiectare.md`.
 
 ---
 

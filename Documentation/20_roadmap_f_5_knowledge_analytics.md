@@ -54,7 +54,7 @@
 
 ## Roadmaps Derivate
 
-- `20_roadmap_f_5_1_archify_dms.md`
-- `21_roadmap_f_5_2_cerniq_cognitive_bi.md`
+- `21_roadmap_f_5_1_archify_dms.md`
+- `22_roadmap_f_5_2_cerniq_cognitive_bi.md`
 
 > Pentru detaliile de implementare, consultați roadmap-urile individuale ale fiecărui modul.

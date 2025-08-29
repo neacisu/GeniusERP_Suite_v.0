@@ -129,5 +129,5 @@ Roadmaps viitoare vor fi adăugate sub `roadmap/`:
 3. Creare sub‑roadmap‑uri în directorul `roadmap/` conform tabelului.
 4. Kick‑off Phase 0 – **14 Aug 2025**.
 
-> _Pentru clarificări suplimentare, consultați `0_Instructiuni_stricte_de_proiectare.md` și ambele README‑uri._
+> _Pentru clarificări suplimentare, consultați `1_instructiuni_stricte_de_proiectare.md` și `0_readme_genius_erp_suite.md`._
 

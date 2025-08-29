@@ -46,7 +46,7 @@
 
 ## Roadmaps Derivate
 
-- `17_roadmap_f_4_1_triggerra_collaboration_hub.md`
-- `18_roadmap_f_4_2_triggerra_automation_studio.md`
+- `18_roadmap_f_4_1_triggerra_collaboration_hub.md`
+- `19_roadmap_f_4_2_triggerra_automation_studio.md`
 
 > Pentru detaliile de implementare, consultați roadmap-urile individuale ale fiecărui modul.

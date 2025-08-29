@@ -77,4 +77,4 @@ Structura respectă identic convențiile din **F0** și **F1**; nu introduce ter
 ]
 ```
 
-**Nota:** acest roadmap individual este sincronizat automat cu `3_roadmap_f_1_Core_Platform.md`; nu modifica manual pașii din alt fișier.
+**Nota:** acest roadmap individual este sincronizat automat cu `4_roadmap_f_1_core_platform.md`; nu modifica manual pașii din alt fișier.

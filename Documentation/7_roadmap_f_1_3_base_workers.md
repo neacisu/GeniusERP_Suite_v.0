@@ -136,4 +136,4 @@
 ]
 ```
 
-**Notă**: acest roadmap individual este sincronizat automat cu `3_roadmap_f_1_Core_Platform.md`; nu modificați manual pașii din alte fișiere.
+**Notă**: acest roadmap individual este sincronizat automat cu `4_roadmap_f_1_core_platform.md`; nu modificați manual pașii din alte fișiere.

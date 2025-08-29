@@ -1826,15 +1826,15 @@ Directoarele permise la rădăcină sunt **exact** cele enumerate în structura 
 **ATENȚIE**: Fișierele de roadmap și README existente conțin încă referințe la căile vechi și trebuie actualizate:
 
 ### Roadmap-uri de actualizat:
-- ✅ `5_roadmap_admin_core.md` - actualizat cu `"/core/apps/admin-core/"`
-- ✅ `4_roadmap_shell_gateway.md` - actualizat cu `"/core/apps/shell-gateway/"`  
-- ✅ `6_roadmap_base_workers.md` - actualizat cu `"/core/apps/workers-core/"`
-- ✅ `8_roadmap_vettify.md` - actualizat cu numerotare F2 sincronizată
-- `3_roadmap_f_1_Core_Platform.md` - idem pentru toate căile core
+- ✅ `6_roadmap_f_1_2_admin_core.md` - actualizat cu `"/core/apps/admin-core/"`
+- ✅ `5_roadmap_f_1_1_shell_gateway.md` - actualizat cu `"/core/apps/shell-gateway/"`  
+- ✅ `7_roadmap_f_1_3_base_workers.md` - actualizat cu `"/core/apps/workers-core/"`
+- ✅ `9_roadmap_f_2_1_vettify.md` - actualizat cu numerotare F2 sincronizată
+- `4_roadmap_f_1_core_platform.md` - idem pentru toate căile core
 
 ### README-uri de actualizat:
-- `readme_1_genius_erp_suite.md` - `numeriqo-manufacturing` → aplicația unificată `numeriqo`
-- `1_roadmap_general_suita_genius_erp.md` - referințe la module separate
+- `0_readme_genius_erp_suite.md` - `numeriqo-manufacturing` → aplicația unificată `numeriqo`
+- `2_roadmap_general_suita_genius_erp.md` - referințe la module separate
 
 **Până la actualizare, hook-ul lint-paths va respinge commit-urile care încalcă structura canonică.**
 
