@@ -29,12 +29,18 @@
 | **Multi-Tenancy** | **Cluster per tenant** + schema per modul | Physical tenant isolation eliminates cross-tenant RLS. |
 | Bus   | RabbitMQ 3.14, Redis 7 (BullMQ) | nu Kafka/NATS. |
 | IaC   | Terraform 1.9, Helmfile, Argo CD | nu Pulumi/Ansible roles directe. |
+| **Networking** | **Traefik v3** (edge/ingress) + **Istio minimal** (service mesh) | Traefik: north-south traffic, WAF, rate-limit; Istio: east-west mTLS, traffic splitting |
 | Observability | Prometheus 2.50, Loki 3, Tempo 2, Grafana 10 | invariabil. |
 | Security | Trivy scanner, Cosign signing | praguri standard. |
 
 > **Environment Consistency:** Toate mediile—dev, CI, staging, production—rulează PostgreSQL 17 + pgvector (PostgreSQL-17-compatible). Această configurație este invariantă și mandatory din prima fază.
 
 > **Multi-Tenant Strategy Clarification:** Architecture uses **cluster per tenant** for physical isolation. RLS is used only for **warehouse/module isolation within each tenant cluster**, NOT for cross-tenant isolation (which is achieved through separate clusters). This eliminates redundancy and operational overhead.
+
+> **Networking Strategy Clarification:** Architecture uses a **dual-layer networking approach** with clear responsibility separation:
+> - **Traefik v3 (Edge Router):** Handles **north-south traffic** (external → internal), WAF protection via OWASP CRS v4, rate limiting, TLS termination, and all **IngressRoute** definitions for external access.
+> - **Istio minimal (Service Mesh):** Handles **east-west traffic** (service → service), mTLS for internal communications, traffic splitting for canary deployments, and service-to-service observability. 
+> This design provides enterprise-grade security and traffic management without redundancy - each component has distinct responsibilities.
 
 ### **Standardul de Securitate – Obligatoriu pentru toate modulele**
 

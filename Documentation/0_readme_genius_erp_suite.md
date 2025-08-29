@@ -33,9 +33,10 @@
    - Storage Class
 
 3. **Gateway & Auth**
-   - Traefik v3
+   - **Traefik v3** (edge router: north-south traffic, WAF, rate-limit)
+   - **Istio minimal** (service mesh: east-west mTLS, traffic splitting) 
    - Keycloak 23
-   - TLS/mTLS, rate-limit
+   - Clear networking separation: external access via Traefik, internal security via Istio
 
 4. **Observability Stack**
    - Prometheus, Loki, Tempo
@@ -347,7 +348,7 @@ Provision ≤ 60 s · TTFB OLAP 1 M rows ≤ 800 ms · Pool hit pgBouncer ≥ 97
 
 ### 10.3 Perimetru & API Security
 
-- **Gateway WAF**: Traefik plugin + **OWASP CRS v4**; rate-limit Redis token-bucket (10 req/s user, 1 000 req/min IP).
+- **Gateway WAF**: Traefik v3 plugin + **OWASP CRS v4**; rate-limit Redis token-bucket (10 req/s user, 1 000 req/min IP). **Traefik handles all external traffic** (north-south) while **Istio handles internal service-to-service** communication (east-west mTLS).
 - **gRPC / GraphQL**: schema allow-list; nested depth limit 8, query cost limit 10 000.
 - **Secrets management**: Vault Agent inject side-cars; no secrets in images (`trivy config --severity HIGH`).
 
