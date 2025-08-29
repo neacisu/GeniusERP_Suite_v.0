@@ -87,11 +87,11 @@
 2. **Mercantiq Sales & Billing**
    - POS, Invoice
    - e-Factură
-   - Events `sales.*`
+   - Events `sales.order.*`, `sales.invoice.*`, `sales.payment.*`
 
 3. **Mercantiq Procurement**
    - RFQ → PO → GRN
-   - Events `procurement.*`
+   - Events `procurement.rfq.*`, `procurement.po.*`, `procurement.grn.*`
 
 4. **iWMS v3**
    - Multi-warehouse
@@ -252,7 +252,7 @@ Worker‑ii **Python 3.13** sunt împărţiţi pe **capabilităţi** şi accesa�
 | ---------------- | ------------------------------------- | ---------------------------------------------------- | -------------------------------- | --------------- |
 | **ocr**          | Python 3.13 + PaddleOCR + Tesseract 5 | `ocr.request`, `ocr.invoice`, `ocr.cad`, `ocr.label` | Archify, iWMS                    | HPA CPU 2-10    |
 | **pdf.render**   | Python 3.13 + **Pyppeteer**           | `pdf.render`, `pdf.contract`, `pdf.invoice`          | Mercantiq, Archify               | Celery queue    |
-| **tax.vat**      | Python + RapidTax RO                  | `tax.vat`, `tax.eu`, `tax.validate`                  | Mercantiq, Numeriqo Accounting   | Celery queue    |
+| **tax.vat**      | Python 3.13 + RapidTax RO             | `tax.vat`, `tax.eu`, `tax.validate`                  | Mercantiq, Numeriqo Accounting   | Celery queue    |
 | **anaf.taxpayer**   | Python 3.13 + requests             | `anaf.taxpayer`, `anaf.taxpayer.validate`             | Vettify (CRM), Mercantiq (Sales, Billing, POS, Procurement), Numeriqo Accounting | Celery queue    |
 | **anaf.efactura**   | Python 3.13 + **SignXML**           | `anaf.efactura.submit`, `anaf.efactura.status`        | Mercantiq Sales & Billing                          | Celery queue    |
 | **anaf.etransport** | Python 3.13 + requests             | `anaf.etransport.submit`, `anaf.etransport.status`    | iWMS v3 (Logistics)                                | Celery queue    |
@@ -261,17 +261,17 @@ Worker‑ii **Python 3.13** sunt împărţiţi pe **capabilităţi** şi accesa�
 | **llm**          | llama-cpp-python 8B GPU               | `ai.llm`, `ai.chat`, `ai.extract`, `ai.translate`    | aproape toate                    | GPU node        |
 | **gpt4o.proxy**  | aiohttp async                         | `ai.gpt4o`                                           | cerniq, triggerra Studio         | CPU auto        |
 | **forecast**     | Prophet + LSTM + XGBoost (Ray 2)      | `ai.forecast`, `ai.demand`, `ai.stock`               | cerniq, iWMS                     | Ray cluster     |
-| **etl.sync**     | Python + DuckDB + dbt-core            | `etl.sync`, `etl.lakehouse`, `etl.refresh`           | cerniq, Numeriqo                 | Cron / HPA      |
+| **etl.sync**     | Python 3.13 + DuckDB + dbt-core       | `etl.sync`, `etl.lakehouse`, `etl.refresh`           | cerniq, Numeriqo                 | Cron / HPA      |
 | **match.ai**     | PyTorch cosine-sim + faiss            | `match.ai`, `match.rfq`, `match.3wm`                 | Procurement                      | CPU             |
 | **ai.summary**   | GPT-4o + langchain                    | `ai.summary`, `ai.meeting`, `ai.doc.summary`         | triggerra Hub, Archify           | CPU auto        |
 | **ai.classify**  | scikit-learn / zero-shot LLM          | `ai.classify`, `ai.anomaly`, `ai.doc.classify`       | cerniq, Archify                  | CPU             |
 | **ai.churn**     | CatBoost, XGBoost                     | `ai.churn`, `ai.customer.risk`                       | vettify                          | CPU             |
-| **email.send**   | Python + aiosmtplib                   | `email.send`                                         | toate                            | CPU burst       |
+| **email.send**   | Python 3.13 + aiosmtplib              | `email.send`                                         | toate                            | CPU burst       |
 | **notify.slack** | Python 3.13 + **slack_sdk**           | `notify.slack`, `notify.teams`                       | toate                            | CPU burst       |
 | **hr.payroll**   | Custom payroll engine RO              | `hr.payroll`, `hr.bonus`, `hr.comp`                  | Numeriqo People                  | sched. monthly  |
-| **report.kpi**   | Python + pandas + Jinja2              | `report.kpi`, `report.dashboard`, `report.pdf`       | Shell, cerniq                    | CPU             |
+| **report.kpi**   | Python 3.13 + pandas + Jinja2         | `report.kpi`, `report.dashboard`, `report.pdf`       | Shell, cerniq                    | CPU             |
 | **image.resize** | Python 3.13 + **pyvips**              | `img.resize`, `img.thumb`                            | Archify                          | CPU             |
-| **data.mask**    | Python + Faker                        | `data.mask`, `data.anonymize`                        | Admin Core                       | CPU             |
+| **data.mask**    | Python 3.13 + Faker                   | `data.mask`, `data.anonymize`                        | Admin Core                       | CPU             |
 | **gdpr.consent.ai** | Python 3.13 + PostgreSQL 17        | `gdpr.consent.track`, `gdpr.consent.withdraw`, `gdpr.consent.audit` | Vettify AI, toate modulele AI | CPU             |
 | **gdpr.rtbf**     | Python 3.13 + Celery                 | `gdpr.rtbf.request`, `gdpr.rtbf.delete`, `gdpr.rtbf.verify` | toate modulele cu AI data       | CPU             |
 | **gdpr.classify** | Python 3.13 + ML/regex               | `gdpr.classify.pii`, `gdpr.classify.data`, `gdpr.classify.impact` | toate modulele AI            | CPU             |
@@ -343,7 +343,7 @@ Provision ≤ 60 s · TTFB OLAP 1 M rows ≤ 800 ms · Pool hit pgBouncer ≥ 97
 - **Identity Provider**: **Keycloak 23** multi-realm; flux OIDC + PKCE.
 - **JWT**: RS256, claims: `tid`, `whid`, `scp`, `role`, `exp`; header `kid` pentru JWKS.
 - **RBAC/ABAC**: roluri ierarhice mapate pe Keycloak groups; **OPA Gatekeeper** aplică politici ABAC (scopes × tenant × warehouse).
-- **Row / Column Security**: PG RLS rule-based (`tid = current_setting('app.tid') AND (whid = current_setting('app.whid') OR whid IS NULL)`).
+- **Row / Column Security**: PG RLS rule-based (`tid = current_setting('app.tid') AND (whid = current_setting('app.whid') OR whid IS NULL) AND (mid = current_setting('app.mid') OR mid IS NULL)`).
 
 ### 10.3 Perimetru & API Security
 

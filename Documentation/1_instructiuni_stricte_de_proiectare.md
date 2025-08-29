@@ -25,7 +25,7 @@
 | UI    | React 19, Vite 5 Federation, Tailwind 3, MUI 6 | fără Next.js/Angular. |
 | API   | NestJS 11 (Node 20 LTS, TS 5) | fără Express/Koa. |
 | Workeri | Python 3.13 (FastAPI tasks, Celery 6, Ray 2) | fără Flask/Django. |
-| Storage | PostgreSQL 17 (+pgvector), MinIO (REPL, SSE‑C) | nu MySQL/Mongo. |
+| Storage | PostgreSQL 17 (+pgvector >= 0.5.0), MinIO (REPL, SSE‑C) | nu MySQL/Mongo. |
 | Bus   | RabbitMQ 3.14, Redis 7 (BullMQ) | nu Kafka/NATS. |
 | IaC   | Terraform 1.9, Helmfile, Argo CD | nu Pulumi/Ansible roles directe. |
 | Observability | Prometheus 2.50, Loki 3, Tempo 2, Grafana 10 | invariabil. |
