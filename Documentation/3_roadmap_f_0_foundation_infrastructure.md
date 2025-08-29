@@ -1,8 +1,8 @@
-# 3 · Roadmap F0 – Foundation & Infrastructure (126 prompts CursorAI)
+# 3 · Roadmap F0 – Foundation & Infrastructure (125 prompts CursorAI)
 
 ## Format JSON extins – câmpuri obligatorii:
 
-- **`step`** – index consecutiv 1‑126 (consecutive integers only)
+- **`step`** – index consecutiv 1‑125 (consecutive integers only)
 - **`scope`** – sub‑sistem vizat
 - **`context`** – livrări anterioare relevante
 - **`task`** – instrucțiune imperativă clară
