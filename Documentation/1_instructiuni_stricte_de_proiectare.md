@@ -31,6 +31,8 @@
 | Observability | Prometheus 2.50, Loki 3, Tempo 2, Grafana 10 | invariabil. |
 | Security | Trivy scanner, Cosign signing | praguri standard. |
 
+> **Environment Consistency:** Toate mediile—dev, CI, staging, production—rulează PostgreSQL 17 + pgvector (PostgreSQL-17-compatible). Această configurație este invariantă și mandatory din prima fază.
+
 ### **Standardul de Securitate – Obligatoriu pentru toate modulele**
 
 **Trivy Scanner Praguri Standard:**
