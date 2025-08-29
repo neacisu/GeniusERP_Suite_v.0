@@ -304,7 +304,7 @@ Worker‑ii **Python 3.13** sunt împărţiţi pe **capabilităţi** şi accesa�
 
 | Resursă                 | Unit of isolation                     | Observaţii                                                    |
 | ----------------------- | ------------------------------------- | ------------------------------------------------------------- |
-| **PostgreSQL 17**       | cluster per tenant → schema per modul | DDL versionat; `pgvector` instalat pe toate clusterele.       |
+| **PostgreSQL 17**       | cluster per tenant → schema per modul | DDL versionat; `pgvector` instalat; **physical tenant isolation eliminates cross-tenant RLS needs**.       |
 | **MinIO**               | bucket per tenant → prefix per modul  | SSE-C AES-256-GCM; erasure coding 6+2; site replication.      |
 | **pgBouncer**           | pool cross-schema                     | DSN runtime: `dbname={{tenant}}_core search_path={{module}}`. |
 | **DuckDB / Delta-Lake** | folder Parquet per tenant             | Mounted în cerniq pentru OLAP.                                |
@@ -343,7 +343,7 @@ Provision ≤ 60 s · TTFB OLAP 1 M rows ≤ 800 ms · Pool hit pgBouncer ≥ 97
 - **Identity Provider**: **Keycloak 23** multi-realm; flux OIDC + PKCE.
 - **JWT**: RS256, claims: `tid`, `whid`, `scp`, `role`, `exp`; header `kid` pentru JWKS.
 - **RBAC/ABAC**: roluri ierarhice mapate pe Keycloak groups; **OPA Gatekeeper** aplică politici ABAC (scopes × tenant × warehouse).
-- **Row / Column Security**: PG RLS rule-based (`tid = current_setting('app.tid') AND (whid = current_setting('app.whid') OR whid IS NULL) AND (mid = current_setting('app.mid') OR mid IS NULL)`).
+- **Row / Column Security**: PG RLS rule-based pentru warehouse/module isolation în cadrul tenant cluster (`(whid = current_setting('app.whid') OR whid IS NULL) AND (mid = current_setting('app.mid') OR mid IS NULL)`). **Nota:** tenant isolation se face la nivel de cluster, nu prin RLS.
 
 ### 10.3 Perimetru & API Security
 

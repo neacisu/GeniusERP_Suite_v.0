@@ -8,7 +8,7 @@
 
 **Workeri integrați (disponibili azi în flotă):**
 `forecast` (predicții cerere și ROP/SS), `pdf.render` (etichete și BOL), `ocr` (recepție automată), `email.send` (notificări), `match.ai` (optimizări generale), `route.optimization.ai` (optimizare rute picking), `slotting.optimization.ai` (optimizare slotting ABC)
-**Date & securitate:** Multi‑tenant PG 17 + pgvector + MinIO per tenant (SSE‑C AES‑256‑GCM), Redis per tenant; JWT RS256 cu claims `tid`,`whid`,`scp`,`role`; RLS strictă pe `tid/whid`.
+**Date & securitate:** Multi‑tenant PG 17 + pgvector + MinIO per tenant (SSE‑C AES‑256‑GCM), Redis per tenant; JWT RS256 cu claims `tid`,`whid`,`scp`,`role`; RLS pe `whid` pentru warehouse isolation în tenant cluster.
 **Observabilitate:** Prometheus metrics, Tempo traces end‑to‑end (browser→API→RMQ→worker), dashboards dedicați O2C/P2P & alerte.
 
 ---
@@ -174,7 +174,7 @@ standalone/iwms/
   {"step":312,"scope":"db-migrations-core","context":"Schema iWMS necesară","task":"Migrations pentru `warehouses, zones, bins, items` cu PK compuse (tid,whid,code)","dirs":["/standalone/iwms/apps/api/src/migrations/"],"constraints":"respectă RLS design","output":"DDL locații"},
   {"step":313,"scope":"db-migrations-stock","context":"Stocuri & mișcări","task":"Migrations `stock, stock_tx, reservations` cu indecși (item_id,bin_id,status)","dirs":["/standalone/iwms/apps/api/src/migrations/"],"constraints":"no hard-coded defaults","output":"DDL stocuri"},
   {"step":314,"scope":"db-migrations-flows","context":"Fluxuri operaționale","task":"Migrations `picklists, waves, shipments, grn, adjustments, returns`","dirs":["/standalone/iwms/apps/api/src/migrations/"],"constraints":"FK stricte; on delete restrict","output":"DDL fluxuri"},
-  {"step":315,"scope":"db-rls","context":"Security by design","task":"Activează RLS pe toate tabelele; politici `tid = current_setting('app.tid') AND (whid = current_setting('app.whid') OR whid IS NULL)`","dirs":["/standalone/iwms/apps/api/src/migrations/"],"constraints":"doar RLS; fără view-uri nesecurizate","output":"RLS activ"},
+  {"step":315,"scope":"db-rls","context":"Security by design","task":"Activează RLS pe toate tabelele; politici `(whid = current_setting('app.whid') OR whid IS NULL)` pentru warehouse isolation în tenant cluster","dirs":["/standalone/iwms/apps/api/src/migrations/"],"constraints":"doar RLS; fără view-uri nesecurizate; tenant isolation = cluster level","output":"RLS activ"},
   {"step":316,"scope":"db-vector","context":"Recomandări/slotting ușor","task":"Instalează pgvector; tabele `item_embeddings` pentru similitudini (opțional)","dirs":["/standalone/iwms/apps/api/src/migrations/"],"constraints":"nu bloca MVP; feature flag","output":"pgvector ready"},
   {"step":317,"scope":"entities-dto","context":"ORM + validare","task":"Definește entități TypeORM + DTO cu class-validator pentru warehousing domain","dirs":["/standalone/iwms/apps/api/src/entities/","/standalone/iwms/apps/api/src/dto/"],"constraints":"no `any`","output":"entități + DTO"},
   {"step":318,"scope":"guards-interceptors","context":"Auth & observabilitate","task":"JWT guard extins (claims `tid,whid,scp,role`), interceptors OTEL trace-id în headers RMQ","dirs":["/standalone/iwms/apps/api/src/guards/","/standalone/iwms/apps/api/src/interceptors/"],"constraints":"unit tests 80%","output":"securitate API"},

@@ -26,12 +26,15 @@
 | API   | NestJS 11 (Node 20 LTS, TS 5) | fără Express/Koa. |
 | Workeri | Python 3.13 (FastAPI tasks, Celery 6, Ray 2) | fără Flask/Django. |
 | Storage | PostgreSQL 17 (+pgvector >= 0.5.0), MinIO (REPL, SSE‑C) | nu MySQL/Mongo. |
+| **Multi-Tenancy** | **Cluster per tenant** + schema per modul | Physical tenant isolation eliminates cross-tenant RLS. |
 | Bus   | RabbitMQ 3.14, Redis 7 (BullMQ) | nu Kafka/NATS. |
 | IaC   | Terraform 1.9, Helmfile, Argo CD | nu Pulumi/Ansible roles directe. |
 | Observability | Prometheus 2.50, Loki 3, Tempo 2, Grafana 10 | invariabil. |
 | Security | Trivy scanner, Cosign signing | praguri standard. |
 
 > **Environment Consistency:** Toate mediile—dev, CI, staging, production—rulează PostgreSQL 17 + pgvector (PostgreSQL-17-compatible). Această configurație este invariantă și mandatory din prima fază.
+
+> **Multi-Tenant Strategy Clarification:** Architecture uses **cluster per tenant** for physical isolation. RLS is used only for **warehouse/module isolation within each tenant cluster**, NOT for cross-tenant isolation (which is achieved through separate clusters). This eliminates redundancy and operational overhead.
 
 ### **Standardul de Securitate – Obligatoriu pentru toate modulele**
 

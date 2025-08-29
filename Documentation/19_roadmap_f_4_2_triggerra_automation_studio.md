@@ -22,7 +22,7 @@ Această documentație reprezintă un roadmap detaliat pentru dezvoltarea Trigge
 
 * **Gate F4-1 trecut**: Triggerra Collaboration Hub operațional cu 10+ Kanban boards active
 * **Event‑Bus v1** și naming `<module>.<ctx>.<event>` funcțional; automation event integration
-* **Multitenancy & date**: PostgreSQL 17 (schema per modul), MinIO per tenant, Redis per tenant, **RLS pe `tid/whid/mid`**
+* **Multitenancy & date**: PostgreSQL 17 (cluster per tenant, schema per modul), MinIO per tenant, Redis per tenant, **RLS pe `whid/mid` pentru module/warehouse isolation în tenant cluster**
 * **Worker Fleet** disponibil: `match.ai`, `ai.classify`, `report.kpi`, `pdf.render`, `email.send`, `ocr`
 * **Stack fix**: React 19 + Vite 5 Federation + MUI 6 + Tailwind 3 (UI), NestJS 11 (API), Python 3.13 (workeri), RabbitMQ 3.14 + Redis 7 (bus/queue)
 
