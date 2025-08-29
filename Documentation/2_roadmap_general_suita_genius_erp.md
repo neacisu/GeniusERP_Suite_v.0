@@ -35,6 +35,7 @@
 
 - `5_roadmap_f_1_1_shell_gateway.md`
 - `6_roadmap_f_1_2_admin_core.md`
+- `7_roadmap_f_1_3_base_workers.md`
 
 ---
 

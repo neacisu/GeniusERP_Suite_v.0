@@ -158,3 +158,13 @@ Această fază acoperă dezvoltarea platformei de bază cu 100 de pași (step 20
   {"step":320,"scope":"core-deployment-monitoring","context":"Core deployment monitoring lipsește.","task":"Configurează monitoring pentru core deployments: deployment success/failure rates, rollback frequency, deployment duration tracking, business impact metrics.","dirs":["/infra/grafana/provisioning/dashboards/","/core/infra/k8s/"],"constraints":"deployment visibility; business impact tracking; operational metrics","output":"core deployment monitoring dashboard"}
 ]
 ```
+
+---
+
+## Roadmaps Derivate
+
+- `5_roadmap_f_1_1_shell_gateway.md`
+- `6_roadmap_f_1_2_admin_core.md`
+- `7_roadmap_f_1_3_base_workers.md`
+
+> Pentru detaliile de implementare, consultați roadmap-urile individuale ale fiecărui modul.
