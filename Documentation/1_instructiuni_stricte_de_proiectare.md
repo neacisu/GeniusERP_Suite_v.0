@@ -1700,9 +1700,9 @@
 │   └── event-bus/
 │       └── v1-spec.md
 │
-├── roadmap/                    # toate roadmap‑urile .md generate automat
-│   ├── shell.md
-│   ├── admin-core.md
+├── Documentation/              # toate roadmap‑urile .md și documentația
+│   ├── 5_roadmap_f_1_1_shell_gateway.md
+│   ├── 6_roadmap_f_1_2_admin_core.md
 │   ├── vettify.md
 │   └── … (one per app/fază)
 │
@@ -1774,7 +1774,7 @@ on:
 
 Directoarele permise la rădăcină sunt **exact** cele enumerate în structura canonică:
 - `core/`, `standalone/`, `tools/` - structura principală
-- `.github/`, `docker/`, `scripts/`, `docs/`, `roadmap/`, `tests/` - utilitare
+- `.github/`, `docker/`, `scripts/`, `docs/`, `Documentation/`, `tests/` - utilitare
 - Fișiere de configurare: `.editorconfig`, `nx.json`, `package.json`, etc.
 
 ## Worker & Event Naming

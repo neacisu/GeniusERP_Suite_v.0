@@ -95,11 +95,11 @@
 
 - AI Config Advisor, AI Vision GA, Edge IoT Gateway GA, Marketplace de template‑uri Automation Studio, GDPR Portal GA.
 
-Roadmaps viitoare vor fi adăugate sub `roadmap/`:
+Roadmaps viitoare vor fi adăugate sub `Documentation/`:
 
-- `roadmap/ai-config-advisor.md`
-- `roadmap/iot-gateway.md`
-- `roadmap/gdpr-portal.md`
+- `Documentation/ai-config-advisor.md`
+- `Documentation/iot-gateway.md`
+- `Documentation/gdpr-portal.md`
 
 ---
 
@@ -127,7 +127,7 @@ Roadmaps viitoare vor fi adăugate sub `roadmap/`:
 ## Next Steps
 1. Validare roadmap cu stakeholders (product, finance, ops).
 2. Detaliere backlog Phase 0 + Phase 1 în Jira.
-3. Creare sub‑roadmap‑uri în directorul `roadmap/` conform tabelului.
+3. Creare sub‑roadmap‑uri în directorul `Documentation/` conform tabelului.
 4. Kick‑off Phase 0 – **14 Aug 2025**.
 
 > _Pentru clarificări suplimentare, consultați `1_instructiuni_stricte_de_proiectare.md` și `0_readme_genius_erp_suite.md`._

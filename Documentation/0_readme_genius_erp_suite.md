@@ -237,7 +237,7 @@ Acești workeri comuni apar în **Worker Registry** (Admin Core) alături de cei
 
 1. **Validare roadmap** cu stakeholder-ii principali
 2. **Creare backlog** F0 + F1 în Jira, etichetat `scope:foundation`
-3. **Generare roadmap-uri** individuale în directorul `roadmap/`
+3. **Generare roadmap-uri** individuale în directorul `Documentation/`
 4. **Kick-off F0** → trecere la execuție
 
 > Pentru reguli stricte de proiectare consultați `1_instructiuni_stricte_de_proiectare.md`.
