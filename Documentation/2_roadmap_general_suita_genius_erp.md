@@ -1,6 +1,6 @@
 # Roadmap General – GeniusERP Suite
 
-> **Scop** – ghid cronologic & logic pentru a implementa întreaga suită (aplicația‑mamă *Genius Shell* + 13 aplicații stand‑alone). Detaliile de execuție fină vor fi elaborate în roadmap‑urile individuale (`roadmap/<module>.md`).
+> **Scop** – ghid cronologic & logic pentru a implementa întreaga suită (aplicația‑mamă *Genius Shell* + 13 aplicații stand‑alone). Detaliile de execuție fină vor fi elaborate în roadmap‑urile individuale numerotate (ex: `5_roadmap_f_1_1_shell_gateway.md`).
 
 ---
 
@@ -33,8 +33,8 @@
 
 **Roadmap individual lansat:**
 
-- `roadmap/shell.md`
-- `roadmap/admin-core.md`
+- `5_roadmap_f_1_1_shell_gateway.md`
+- `6_roadmap_f_1_2_admin_core.md`
 
 ---
 
@@ -46,7 +46,7 @@
 | 2‑3 | 2 SW  | **Mercantiq Procurement** – RFQ → PO → GRN | mercantiq‑procurement | 2‑2 |
 | 2‑4 | 3 SW  | **iWMS v3.0** – multi‑warehouse, mobile, worker `forecast` | iwms | 2‑2 |
 
-**Roadmaps individuale:** `roadmap/vettify.md`, `roadmap/mercantiq.md`, `roadmap/iwms.md`
+**Roadmaps individuale:** `9_roadmap_f_2_1_vettify.md`, `10_roadmap_f_2_2_mercantiq_sales_billing.md`, `11_roadmap_f_2_3_mercantiq_procurement.md`, `12_roadmap_f_2_4_iwms_v3.md`
 
 ---
 
@@ -57,7 +57,7 @@
 | 3‑2 | 3 SW  | **Numeriqo Accounting** – Plan Conturi RO, balanțe, SAF‑T | numeriqo‑accounting | 3‑1 |
 | 3‑3 | 3 SW  | **Numeriqo People & Payroll** – motor salarizare RO | numeriqo‑people | 3‑2 |
 
-**Roadmaps:** `roadmap/numeriqo/manufacturing.md`, `roadmap/numeriqo/accounting.md`, `roadmap/numeriqo/people.md`
+**Roadmaps:** `14_roadmap_f_3_1_numeriqo_manufacturing.md`, `15_roadmap_f_3_2_numeriqo_accounting.md`, `16_roadmap_f_3_3_numeriqo_people_payroll.md`
 
 ---
 
@@ -67,7 +67,7 @@
 | 4‑1 | 3 SW  | **triggerra Collaboration Hub** – Kanban, chat, OKR | triggerra‑collab | 2‑1 |
 | 4‑2 | 3 SW  | **triggerra Automation Studio** – flow‑builder, runtime sandbox | triggerra‑automation | 4‑1 |
 
-**Roadmaps:** `roadmap/triggerra-collab.md`, `roadmap/triggerra-automation.md`
+**Roadmaps:** `18_roadmap_f_4_1_triggerra_collaboration_hub.md`, `19_roadmap_f_4_2_triggerra_automation_studio.md`
 
 ---
 
@@ -77,7 +77,7 @@
 | 5‑1 | 2 SW  | **Archify.app** – DMS + e‑Sign calificat v1 | archify | 2‑4 |
 | 5‑2 | 4 SW  | **cerniq.app** – Cognitive BI (AI2BI, AI4BI, Lakehouse) | cerniq | 3‑2, 5‑1 |
 
-**Roadmaps:** `roadmap/archify.md`, `roadmap/cerniq.md`
+**Roadmaps:** `21_roadmap_f_5_1_archify_dms.md`, `22_roadmap_f_5_2_cerniq_cognitive_bi.md`
 
 ---
 
