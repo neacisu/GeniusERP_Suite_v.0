@@ -30,10 +30,12 @@
 | Bus   | RabbitMQ 3.14, Redis 7 (BullMQ) | nu Kafka/NATS. |
 | IaC   | Terraform 1.9, Helmfile, Argo CD | nu Pulumi/Ansible roles directe. |
 | **Networking** | **Traefik v3** (edge/ingress) + **Istio minimal** (service mesh) | Traefik: north-south traffic, WAF, rate-limit; Istio: east-west mTLS, traffic splitting |
-| Observability | Prometheus 2.50, Loki 3, Tempo 2, Grafana 10 | invariabil. |
+| Observability | Prometheus 2.50, Loki 3, Tempo 2, Grafana 10 | invariabil. **Nu SignalFx/Splunk/DataDog** - folosește doar stack-ul aprobat. |
 | Security | Trivy scanner, Cosign signing | praguri standard. |
 
 > **Environment Consistency:** Toate mediile—dev, CI, staging, production—rulează PostgreSQL 17 + pgvector (PostgreSQL-17-compatible). Această configurație este invariantă și mandatory din prima fază.
+
+> **Observability Stack Compliance:** Workers și toate componentele folosesc **exclusiv** Prometheus/OTEL exporters din start. **Nu există tool-uri de observability non-aprobate** (SignalFx, Splunk, DataDog, etc.). Celery metrics se expun prin `prometheus_fastapi_instrumentator` și `opentelemetry-exporter-prometheus` conform stack-ului fix.
 
 > **Multi-Tenant Strategy Clarification:** Architecture uses **cluster per tenant** for physical isolation. RLS is used only for **warehouse/module isolation within each tenant cluster**, NOT for cross-tenant isolation (which is achieved through separate clusters). This eliminates redundancy and operational overhead.
 
