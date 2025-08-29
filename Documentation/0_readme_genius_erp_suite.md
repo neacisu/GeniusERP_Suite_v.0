@@ -35,8 +35,9 @@
 3. **Gateway & Auth**
    - **Traefik v3** (edge router: north-south traffic, WAF, rate-limit)
    - **Istio minimal** (service mesh: east-west mTLS, traffic splitting) 
-   - Keycloak 23
+   - **Keycloak 23** (two-stage deployment: PoC for early dev → production via helmfile)
    - Clear networking separation: external access via Traefik, internal security via Istio
+   - Development velocity: Early auth PoC unblocks parallel development
 
 4. **Observability Stack**
    - Prometheus, Loki, Tempo

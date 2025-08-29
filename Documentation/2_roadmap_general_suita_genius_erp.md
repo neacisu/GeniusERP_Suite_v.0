@@ -16,7 +16,7 @@
 |-----|-------|--------------|----------|--------|
 | 0‑1 | 1 SW | Repo Nx 18 + `init.sh` + `manage-app.sh` | n/a | ✔︎ |
 | 0‑2 | 1 SW | Terraform VPC + k8s (dev, stage, prod) | infra | ✔︎ |
-| 0‑3 | 1 SW | Traefik v3 ingress, Keycloak 23 realm‑template **(PoC; înlocuit definitiv la step 34 F0)** | shell‑gateway | ✔︎ |
+| 0‑3 | 1 SW | Traefik v3 ingress, Keycloak 23 realm‑template **(PoC pentru early auth development; production setup la step 34 F0 via helmfile)** | shell‑gateway | ✔︎ |
 | 0‑4 | 2 SW | Observability stack (Prom 2.50, Loki 3, Tempo 2, Grafana 10) | infra | ⚙︎ |
 | 0‑5 | 1 SW | CI template GitHub Actions (build/test/scan/sign/publish) | ci‑templates | ⚙︎ |
 

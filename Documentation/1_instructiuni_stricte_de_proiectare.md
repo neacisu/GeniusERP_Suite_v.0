@@ -42,6 +42,11 @@
 > - **Istio minimal (Service Mesh):** Handles **east-west traffic** (service → service), mTLS for internal communications, traffic splitting for canary deployments, and service-to-service observability. 
 > This design provides enterprise-grade security and traffic management without redundancy - each component has distinct responsibilities.
 
+> **Keycloak Deployment Strategy:** Phase 0 uses a **two-stage approach** for efficient development workflow:
+> - **Step 0-3 (PoC):** Lightweight Keycloak realm-template setup to **unblock early development** of Event Bus (step 1-4) and authentication-dependent components. Allows parallel development while full infrastructure is being built.
+> - **Step 34 (Production):** Full Keycloak deployment via helmfile with production-grade configuration, high availability, and proper integration with Istio service mesh and monitoring stack.
+> This approach maximizes development velocity by providing early auth capabilities without waiting for complete infrastructure readiness.
+
 ### **Standardul de Securitate – Obligatoriu pentru toate modulele**
 
 **Trivy Scanner Praguri Standard:**
