@@ -17,7 +17,7 @@
 | Order | Module | Prefix | Range | File |
 |-------|--------|--------|-------|------|
 | 1 | Shell Gateway | F1-01 | F1-01-000 → F1-01-040 | `5_roadmap_f_1_1_shell_gateway.md` |
-| 2 | Admin Core | F1-02 | F1-02-000 → F1-02-050 | `6_roadmap_f_1_2_admin_core.md` |
+| 2 | Admin Core | F1-02 | F1-02-000 → F1-02-050 | `6_roadmap_f_1_2_admin_core.md` | ✅ **COMPLETE** |
 | 3 | Base Workers | F1-03 | F1-03-000 → F1-03-088 | `7_roadmap_f_1_3_base_workers.md` | ✅ **COMPLETE** |
 
 ### Phase F2 - Commercial Core Apps
